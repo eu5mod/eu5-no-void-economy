@@ -10,6 +10,7 @@ cbp_core03_probe_location_changed_owner = {
 		# Re-evaluate the permanent owner-core Control floor immediately after the
 		# owner transition. The effect itself verifies the current owner and core.
 		cbp_enforce_owner_core_control_floor = yes
+		cbp_us04_handle_location_changed_owner = yes
 		# The exposure probe observes all live location-owner changes during a long
 		# revalidation run. Seeing the same location twice is not enough evidence of
 		# a duplicate engine callback; it can also be a later legitimate ownership

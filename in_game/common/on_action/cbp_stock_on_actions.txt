@@ -19,6 +19,7 @@ cbp_start_game_stock_initialization_pulse = {
 		# global US-04 initialization version marker. Country-owned locations are
 		# initialized lazily from monthly/yearly country pulses.
 		cbp_initialize_pop_demand_multipliers_once = yes
+		cbp_advance_us04_sparse_index_load_generation = yes
 		cbp_start_game_stock_initialization_dispatcher = yes
 		cbp_core04_refresh_all_location_market_memory = yes
 	}
@@ -28,6 +29,9 @@ cbp_load_game_stock_initialization_pulse = {
 	effect = {
 		# Load repair is idempotent. It fills missing startup markers, but it does
 		# not overwrite a ready schema or revive a failed/incompatible schema.
+		# Advancing the sparse-index generation makes each country rebuild its
+		# country-owned US-04 lists exactly once on its next monthly/yearly pulse.
+		cbp_advance_us04_sparse_index_load_generation = yes
 		cbp_repair_stock_lifecycle_on_game_load = yes
 	}
 }

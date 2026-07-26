@@ -11,6 +11,7 @@ from pathlib import Path, PurePosixPath
 
 
 REPLACE_OBJECTS = "replace_objects"
+INJECT_OBJECTS = "inject_objects"
 GLOB_TOKENS = "*?["
 
 
@@ -47,6 +48,14 @@ def prefixed_output(source: str) -> str:
     return relative.with_name(name).as_posix()
 
 
+def inject_prefixed_output(source: str) -> str:
+    relative = PurePosixPath(source)
+    name = relative.name
+    if not name.startswith("cbp_inject_"):
+        name = f"cbp_inject_{name}"
+    return relative.with_name(name).as_posix()
+
+
 def output_for(item: dict[str, object]) -> str:
     output = item.get("output_file")
     if isinstance(output, str):
@@ -56,6 +65,8 @@ def output_for(item: dict[str, object]) -> str:
         raise ValueError("manifest bootstrap requires exact source paths")
     if item.get("render_mode") == REPLACE_OBJECTS:
         return prefixed_output(source)
+    if item.get("render_mode") == INJECT_OBJECTS:
+        return inject_prefixed_output(source)
     return source
 
 

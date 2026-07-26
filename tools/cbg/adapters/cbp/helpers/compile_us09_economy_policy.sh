@@ -388,6 +388,7 @@ if [[ "$skip_rgo_prices" -eq 0 ]]; then
 	done
 } > "$prices_output_file"
 strip_trailing_whitespace_in_place "$prices_output_file"
+perl -0pi -e 's/\n+\z/\n/' "$prices_output_file"
 fi
 
 generated_pop_type_files=0

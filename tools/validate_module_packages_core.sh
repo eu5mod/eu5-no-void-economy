@@ -5,7 +5,7 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
-local_config="$repo_root/.cbp.local.env"
+local_config="${MODEU5_LOCAL_CONFIG_FILE:-$repo_root/.cbp.local.env}"
 if [[ -f "$local_config" ]]; then
 	set -a
 	# shellcheck source=/dev/null
@@ -206,7 +206,7 @@ require_match 'name = cbp_war_package_version' \
 	packages/cbp_war_rebalance/in_game/common/on_action/cbp_war_package_on_actions.txt \
 	'War package version missing'
 
-us09_prices_file="packages/cbp_economy_rebalance/in_game/common/prices/00_hardcoded.txt"
+us09_prices_file="packages/cbp_economy_rebalance/in_game/common/prices/cbp_00_hardcoded.txt"
 us09_trade_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/trade_buildings.txt"
 us09_market_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/market_buildings.txt"
 us09_rgo_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_us09_rgo_static_modifiers.txt"
@@ -223,10 +223,10 @@ require_file "$us09_market_stockpile_static_modifier_file"
 require_file "$us09_market_stockpile_effects_file"
 require_match '^# Source: <EU5_GAME_COMMON_DIR>/prices/00_hardcoded\.txt$' \
 	"$us09_prices_file" \
-	'US-09 RGO price override must preserve the vanilla prices file path'
-require_match '^expand_rgo_gathering = \{$' \
+		'US-09 RGO price override must document its Vanilla source file'
+require_match '^REPLACE:expand_rgo_gathering = \{$' \
 	"$us09_prices_file" \
-	'US-09 RGO price override must contain the vanilla expand_rgo_gathering key'
+	'US-09 RGO price override must replace the Vanilla expand_rgo_gathering key without shadowing unrelated prices'
 us09_trade_capacity_percent="$(
 	python3 - "$us09_trade_buildings_file" <<'PY'
 from __future__ import annotations
@@ -236,8 +236,7 @@ import re
 import sys
 from pathlib import Path
 
-path = Path(sys.argv[1])
-lines = path.read_text(encoding="utf-8-sig").splitlines()
+lines = Path(sys.argv[1]).read_text(encoding="utf-8-sig").splitlines()
 
 def header_value(label: str) -> tuple[float, float | None]:
     number = r"-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)"
@@ -268,7 +267,10 @@ def code(line: str) -> str:
 
 def top_block(name: str) -> str:
     for index, line in enumerate(lines):
-        if re.match(rf"^{re.escape(name)}\s*=\s*\{{", code(line)):
+        if re.match(
+            rf"^(?:(?:REPLACE|INJECT):)?{re.escape(name)}\s*=\s*\{{",
+            code(line),
+        ):
             depth = 0
             block: list[str] = []
             for child in lines[index:]:
@@ -285,17 +287,45 @@ def assignment(block: str, key: str) -> float:
         raise SystemExit(f"US-09 trade-building override must contain {key}")
     return float(match.group(1))
 
+def injected_assignment(block: str, key: str) -> tuple[float, float, float]:
+    pattern = (
+        rf"^\s*{re.escape(key)}\s*=\s*"
+        r"(?P<delta>-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))\s+"
+        r"# VANILLA = (?P<vanilla>-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)); "
+        r"TARGET = (?P<target>-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+))$"
+    )
+    match = re.search(pattern, block, re.M)
+    if not match:
+        raise SystemExit(
+            f"US-09 additive building override must trace {key} "
+            "as delta, Vanilla, and target"
+        )
+    delta = float(match.group("delta"))
+    vanilla = float(match.group("vanilla"))
+    target = float(match.group("target"))
+    if not math.isclose(vanilla + delta, target, rel_tol=0, abs_tol=0.000001):
+        raise SystemExit(f"US-09 injected {key} delta does not reach its target")
+    return delta, vanilla, target
+
 marketplace_blocks = {
     name: top_block(name)
     for name in ("marketplace", "merchants_quarters", "grand_marketplace")
 }
 marketplace_maintenance: dict[str, float] | None = None
 for name, block in marketplace_blocks.items():
-    trades_per_burgher = assignment(block, "local_trades_per_burgher")
-    merchant_capacity = assignment(block, "local_merchant_capacity")
+    injected = block.lstrip().startswith("INJECT:")
+    if injected:
+        _delta, vanilla_capacity, merchant_capacity = injected_assignment(
+            block, "local_merchant_capacity"
+        )
+        expected_capacity = vanilla_capacity * trade_multiplier
+    else:
+        trades_per_burgher = assignment(block, "local_trades_per_burgher")
+        merchant_capacity = assignment(block, "local_merchant_capacity")
+        expected_capacity = trades_per_burgher * trade_multiplier
     if not math.isclose(
         merchant_capacity,
-        trades_per_burgher * trade_multiplier,
+        expected_capacity,
         rel_tol=0,
         abs_tol=0.000001,
     ):
@@ -303,7 +333,12 @@ for name, block in marketplace_blocks.items():
             f"US-09 {name} local_merchant_capacity must equal "
             "local_trades_per_burgher x declared trade-capacity multiplier"
         )
-    if assignment(block, "local_burghers_estate_power") <= 0:
+    estate_power = (
+        injected_assignment(block, "local_burghers_estate_power")[2]
+        if injected
+        else assignment(block, "local_burghers_estate_power")
+    )
+    if estate_power <= 0:
         raise SystemExit(f"US-09 {name} estate-power value must stay positive")
 
     maintenance_match = re.search(
@@ -311,8 +346,10 @@ for name, block in marketplace_blocks.items():
         block,
         re.S | re.M,
     )
-    if not maintenance_match:
+    if not maintenance_match and not injected:
         raise SystemExit(f"US-09 {name} must retain a maintenance block")
+    if not maintenance_match:
+        continue
     body = maintenance_match.group("body")
     values = {
         key: float(value)
@@ -353,7 +390,7 @@ def code(line: str) -> str:
 stack: list[tuple[str, int, int]] = []
 ranges: list[tuple[str, int, int, int]] = []
 for index, line in enumerate(lines):
-    match = re.match(r"^\s*([A-Za-z0-9_]+)\s*=\s*\{", code(line))
+    match = re.match(r"^\s*(?:REPLACE:)?([A-Za-z0-9_]+)\s*=\s*\{", code(line))
     if match:
         stack.append((match.group(1), index, len(stack)))
     for _ in range(code(line).count("}")):
@@ -427,16 +464,23 @@ require_match 'every_market_center_in_country = \{' \
 require_match '^[[:space:]]*STATIC_MODIFIER_cbp_us09_base_rgo_size_10_percent_bonus:0 "\(CBP\) 10% Bigger RGO"$' \
 	packages/cbp_economy_rebalance/main_menu/localization/english/cbp_us09_rgo_l_english.yml \
 	'US-09 base RGO size static modifier localization must include the engine-displayed STATIC_MODIFIER key'
-require_match '^[[:space:]]*building_upkeep_costs = -1\.0$' \
-	packages/cbp_economy_rebalance/in_game/common/auto_modifiers/cbp_building_upkeep_auto_modifiers.txt \
-	'CBP building upkeep auto modifier must cancel country-paid upkeep through the confirmed building_upkeep_costs modifier type'
+require_match '^[[:space:]]*AUTO_MODIFIER_NAME_cbp_us177_double_minting_base:' \
+	packages/cbp_economy_rebalance/main_menu/localization/english/cbp_us177_minting_l_english.yml \
+	'US-177 minting auto modifier must have an explicit user-facing name'
+require_match '^[[:space:]]*BUILDING_UPKEEP_FACTOR = 0[[:space:]]+' \
+	loading_screen/common/defines/cbp_rebase_scaling_cost.txt \
+	'CBP zero Crown building upkeep must use the supported BUILDING_UPKEEP_FACTOR define'
+if [[ -e packages/cbp_economy_rebalance/in_game/common/auto_modifiers/cbp_building_upkeep_auto_modifiers.txt ]]; then
+	printf '%s\n' 'CBP must not ship cbp_building_upkeep_auto_modifiers.txt; EU5 rejects its building_upkeep_costs modifier type.' >&2
+	exit 1
+fi
 if [[ -e packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_building_upkeep_static_modifiers.txt ]]; then
 	printf '%s\n' 'CBP must not ship cbp_building_upkeep_static_modifiers.txt; its old REPLACE:years_since_game_start target does not exist in static_modifiers.' >&2
 	exit 1
 fi
 # Preserve commented Vanilla provenance while rejecting an active assignment.
 # A plain token search incorrectly flags lines such as
-# `# building_upkeep_multiplier = 0.001` in exact-path generated overrides.
+# `# building_upkeep_multiplier = 0.001` in generated building files.
 if search_quiet '^[ \t]*building_upkeep_multiplier[ \t]*=' \
 	packages/cbp_economy_rebalance/in_game/common/auto_modifiers \
 	packages/cbp_economy_rebalance/main_menu/common/static_modifiers
@@ -444,15 +488,82 @@ then
 	printf '%s\n' 'CBP building upkeep overrides must not use the invalid building_upkeep_multiplier modifier type.' >&2
 	exit 1
 fi
+if search_quiet '^[ \t]*building_upkeep_costs[ \t]*=' \
+	packages/cbp_economy_rebalance/in_game/common/auto_modifiers \
+	packages/cbp_economy_rebalance/main_menu/common/static_modifiers
+then
+	printf '%s\n' 'CBP building upkeep overrides must not use the unsupported building_upkeep_costs modifier type.' >&2
+	exit 1
+fi
 
 if [[ -n "${EU5_GAME_COMMON_DIR:-}" && -d "${EU5_GAME_COMMON_DIR:-}/building_types" ]]; then
 	python3 tools/validate_us08_building_maintenance_overrides.py \
 		--common-dir "$EU5_GAME_COMMON_DIR" \
 		--package-common-dir packages/cbp_economy_rebalance/in_game/common \
+		--generation-mode "${MODEU5_BUILDING_GENERATION_MODE:-override}" \
 		--us09-percent "${MODEU5_US09_BONUS_PERCENT:-10}" \
 		--trade-capacity-percent "$us09_trade_capacity_percent" \
 		--maintenance-multiplier "${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.7}" \
-		--trade-building-maintenance-multiplier "${MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}"
+			--trade-building-maintenance-multiplier "${MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}"
+fi
+
+unsafe_building_replace_outputs="$(
+	find packages/cbp_economy_rebalance/in_game/common/building_types \
+		-maxdepth 1 -type f -name 'cbp_*.txt' ! -name 'cbp_inject_*.txt' -print 2>/dev/null | sort
+)"
+if [[ -n "$unsafe_building_replace_outputs" ]]; then
+	printf '%s\n' \
+		'CBP structural building outputs must use complete exact-path files.' \
+		'REPLACE:<building> does not purge Vanilla nested production methods:' \
+		"$unsafe_building_replace_outputs" >&2
+	exit 1
+fi
+if search_lines \
+	'^[[:space:]]*(REPLACE|INJECT|TRY_INJECT):(unique_production_methods|production_methods|possible_production_methods)[[:space:]]*=' \
+	packages/cbp_economy_rebalance/in_game/common/building_types
+then
+	printf '%s\n' \
+		'Nested production-method containers must use plain field names.' \
+		'No inspected M&T building uses REPLACE/INJECT on these containers, and CBP has no confirmed recursive replacement contract.' >&2
+	exit 1
+fi
+if ! find packages/cbp_economy_rebalance/in_game/common/building_types \
+	-maxdepth 1 -type f -name '*.txt' -print0 |
+	while IFS= read -r -d '' building_output; do
+		case "$(basename "$building_output")" in
+			cbp_inject_*)
+				if ! grep -Eq '^[[:space:]]*INJECT:[A-Za-z0-9_.:-]+[[:space:]]*=' "$building_output" ||
+					grep -Eq '^[[:space:]]*(REPLACE|TRY_INJECT):' "$building_output"; then
+					printf 'Generated additive building output must contain only INJECT entries: %s\n' "$building_output" >&2
+					exit 1
+				fi
+				;;
+			*)
+				if grep -Eq '^[[:space:]]*(REPLACE|INJECT|TRY_INJECT):' "$building_output"; then
+					printf 'Generated exact-path building output must contain plain Vanilla keys: %s\n' "$building_output" >&2
+					exit 1
+				fi
+				;;
+		esac
+	done
+then
+	exit 1
+fi
+python3 tools/validate_cbp_building_injections.py
+
+political_gods_file="packages/cbp_economy_rebalance/in_game/common/gods/hellenism.txt"
+stale_political_gods_file="packages/cbp_economy_rebalance/in_game/common/gods/cbp_hellenism.txt"
+require_file "$political_gods_file"
+if [[ -e "$stale_political_gods_file" ]]; then
+	printf '%s\n' \
+		'Nested omen registries require an exact-path gods override.' \
+		"Remove the runtime-unsafe REPLACE output: $stale_political_gods_file" >&2
+	exit 1
+fi
+if grep -Eq '^[[:space:]]*(REPLACE|INJECT|TRY_INJECT):' "$political_gods_file"; then
+	printf 'Exact-path gods output must contain plain Vanilla keys: %s\n' \
+		"$political_gods_file" >&2
+	exit 1
 fi
 
 stale_us09_override_files="$(

@@ -73,8 +73,7 @@ def build_spec(game_root: Path, burgher: Decimal, laborer: Decimal) -> dict[str,
                     header.append(f"# Laborer promotion-speed multiplier: {compact(Decimal(1) + laborer / 100)} (+{compact(laborer)}%)")
                 rules.append({
                     "file": relative,
-                    "output_file": relative,
-                    "render_mode": "normalized_with_header",
+                    "render_mode": "replace_objects",
                     "header": header,
                     "object": obj.path[0],
                     "field": match.group("field"),
@@ -86,13 +85,23 @@ def build_spec(game_root: Path, burgher: Decimal, laborer: Decimal) -> dict[str,
     required = {target for target, extra in extras.items() if extra != 0}
     if found != required:
         raise ValueError(f"Missing Pop promotion targets: {sorted(required - found)}")
-    outputs = sorted({rule["output_file"] for rule in rules})
+    outputs = sorted({
+        (
+            Path(str(rule["file"])).parent
+            / f"cbp_{Path(str(rule['file'])).name}"
+        ).as_posix()
+        for rule in rules
+    })
     return {
         "schema_version": 1,
         "mod_id": "cbp-us09-pop-promotion",
         "business_rule": "Increase Burgher and Laborer promotion factors by their configured percentages.",
         "transformations": rules,
-        "scope_contract": {"owned_outputs": outputs, "phase": "pop-promotion"},
+        "scope_contract": {
+            "owned_outputs": outputs,
+            "phase": "pop-promotion",
+            "packaging": "CBP-prefixed REPLACE:<pop_type> objects",
+        },
     }
 
 

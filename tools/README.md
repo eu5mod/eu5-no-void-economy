@@ -29,9 +29,9 @@ install paths.
 
 `generate_all.sh` derives the vanilla location-static-modifier source from
 `EU5_GAME_COMMON_DIR`. `EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE` may override
-that path. `generate_cbp_location_overrides.sh` copies the selected vanilla
-blocks and changes only their configured target assignment, so unrelated
-vanilla balance changes flow into the generated override automatically.
+that path. `generate_cbp_location_overrides.sh` copies only changed Vanilla
+objects into the dedicated `cbp_location.txt` output and marks them `REPLACE:`,
+so unrelated Vanilla balance changes remain untouched.
 
 `MODEU5_ENABLE_DEBUG_RUNTIME` controls ModeU5 debug behaviour independently from
 the EU5 engine `--debug_mode` launch argument:
@@ -231,13 +231,28 @@ tools/generated/us09_economy_overrides/common/building_types/
 tools/generated/us09_economy_overrides/common/prices/
 ```
 
-When run through `./tools/generate_all.sh`, the same generator writes the loaded
-Rebalance Economy package exact-path overrides under:
+When run through `./tools/generate_all.sh`, CBG writes tracked Rebalance
+Economy overrides under:
 
 ```txt
-packages/cbp_economy_rebalance/in_game/common/building_types/
+packages/cbp_economy_rebalance/in_game/common/building_types/*.txt
 packages/cbp_economy_rebalance/in_game/common/prices/
 ```
+
+`MODEU5_BUILDING_GENERATION_MODE=override` is the default: every affected
+Vanilla building source is generated as a complete same-path file.
+
+Set `MODEU5_BUILDING_GENERATION_MODE=compatibility` to keep only structural and
+maintenance changes in exact-path files. Additive changes then use sparse
+`cbp_<field>_<source>.txt` INJECT files whose values are calculated as
+`target - Vanilla`; prefixed production alternatives use separate
+`cbp_us09_production_methods_<source>.txt` files.
+
+Do not prefix nested production-method containers with `REPLACE:` or `INJECT:`.
+Do not emit complete `REPLACE:<building>` objects that reuse Vanilla nested
+production-method keys. See
+`docs/technical/BUILDING_OVERRIDE_GENERATION.md` for the runtime decision
+record and the inspected M&T comparison.
 
 The building override generator composes the approved static changes that share
 the same vanilla files:
@@ -255,6 +270,7 @@ Pass the desired compensation percentage explicitly. Example:
 ```bash
 ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 7.5 --common-dir "<EU5_INSTALL_DIR>/game/in_game/common"
 MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT=15 ./tools/generate_all.sh
+MODEU5_BUILDING_GENERATION_MODE=compatibility ./tools/generate_all.sh
 ```
 
 If `.cbp.local.env` defines `EU5_GAME_COMMON_DIR`, `--common-dir` is not
@@ -280,6 +296,7 @@ python3 tools/validate_us08_building_maintenance_overrides.py \
   --common-dir "$EU5_GAME_COMMON_DIR" \
   --package-common-dir packages/cbp_economy_rebalance/in_game/common \
   --trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" \
+  --generation-mode "${MODEU5_BUILDING_GENERATION_MODE:-override}" \
   --maintenance-multiplier 0.7 \
   --trade-building-maintenance-multiplier 0.5
 ```
@@ -297,6 +314,39 @@ Use `--target PATH` for a non-default local mod directory, `--keep-logs` when
 preserving the current logs is intentional, or `--skip-idempotence` for a
 faster explicitly non-canonical iteration. The script does not launch EU5 or
 modify Git state.
+
+The console protocol identifies every operation as a step and substep (`1.1`,
+`3.7`, and so on). Substeps have explicit `START` and `END` boundaries with a
+status symbol; major steps use hash banners and a distinct status closure.
+Generation families use numbered start/end boundaries, and CBG runs inside a
+family receive a third-level identifier such as `1.5.1`. Successful validators
+stay compact; warnings remain visible; failures replay their complete captured
+diagnostics. The final two-level summary lists every step and substep,
+including warning counts, failures, and intentional skips. Reproducible JSON
+spec/manifest chatter and local absolute paths are hidden from the canonical
+view while CBG business rules, mutation counts, and edited surfaces remain
+visible.
+
+Local preparation reports trailing whitespace and indentation-only Git
+findings as warnings so they cannot prevent a valid package from being
+installed for runtime testing. Structural patch errors, including unresolved
+conflict markers, remain blocking. CI still runs strict `git diff --check`
+validation and rejects every whitespace finding before merge.
+
+Installation is a clean publication, not an incremental copy. Before copying
+the first package, `install_local_packages.sh` removes and recreates every
+managed `cbp_*` package directory and removes the known legacy `eu5voideco`
+deployment. Its final mirror check fails if the deployed tree contains a stale
+file that is absent from the source payload. It never removes the parent EU5
+`mod` directory or unrelated mods.
+
+To install an already generated and validated checkout without regenerating:
+
+```bash
+./tools/install_local_packages.sh --skip-generate
+./tools/install_local_packages.sh --check
+./tools/clear_eu5_logs.sh
+```
 
 ## Compact test-log summary
 

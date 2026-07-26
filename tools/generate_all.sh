@@ -7,11 +7,55 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # shellcheck source=tools/cbp_tool_lib.sh
 source "$repo_root/tools/cbp_tool_lib.sh"
 
+generation_step_prefix="${CBP_CONSOLE_STEP_PREFIX:-G}"
+generation_substep_index=0
+generation_cbg_index=0
+current_generation_substep=""
+current_generation_title=""
+
+generation_substep_start() {
+	if ((generation_substep_index > 0)); then
+		cbp_console_major_separator
+	fi
+	generation_substep_index=$((generation_substep_index + 1))
+	generation_cbg_index=0
+	current_generation_substep="${generation_step_prefix}.${generation_substep_index}"
+	current_generation_title="$1"
+	if ((generation_substep_index > 1)); then
+		cbp_console_task_start "$current_generation_substep" "$current_generation_title" no
+	else
+		cbp_console_task_start "$current_generation_substep" "$current_generation_title"
+	fi
+}
+
+generation_substep_end() {
+	cbp_console_task_end "$current_generation_substep" OK "$current_generation_title"
+	cbp_console_status_record "$current_generation_substep" OK "$current_generation_title"
+	current_generation_substep=""
+	current_generation_title=""
+}
+
+run_generation_cbg() {
+	generation_cbg_index=$((generation_cbg_index + 1))
+	CBP_CBG_SUMMARY_ID="${current_generation_substep}.${generation_cbg_index}" "$@"
+}
+
 report_generation_failure() {
 	status=$?
 	trap - ERR
 	printf '\n' >&2
-	cbp_console_major_separator 2 >&2
+	if [[ -n "$current_generation_substep" ]]; then
+		cbp_console_task_end \
+			"$current_generation_substep" \
+			FAILED \
+			"$current_generation_title" \
+			"exit $status"
+		cbp_console_status_record \
+			"$current_generation_substep" \
+			FAILED \
+			"$current_generation_title" \
+			"exit $status"
+	fi
 	cbp_console_failure 'Overall CBP generation failed; generated outputs may not be installed.'
 	exit "$status"
 }
@@ -28,6 +72,7 @@ bootstrap_cbg_manifest() {
 		"${@:4}"
 }
 
+generation_substep_start 'Location static modifiers'
 if [[ -n "${EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE:-}" || -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		cbg_location_game_root="${EU5_GAME_COMMON_DIR%/in_game/common}"
@@ -38,7 +83,7 @@ if [[ -n "${EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE:-}" || -n "${EU5_GAME_COMMON
 	cbg_location_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_location_manifest.json"
 	python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_location_spec.py" --output "$cbg_location_spec"
 	bootstrap_cbg_manifest "$cbg_location_spec" "$repo_root" "$cbg_location_manifest"
-	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+	run_generation_cbg python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
 		--game-root "$cbg_location_game_root" \
 		--spec "$cbg_location_spec" \
 		--output-root "$repo_root" \
@@ -47,7 +92,9 @@ if [[ -n "${EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE:-}" || -n "${EU5_GAME_COMMON
 else
 	printf '%s\n' 'Skipping CBP location static-modifier generation; configure EU5_GAME_LOCATION_STATIC_MODIFIERS_FILE or EU5_GAME_COMMON_DIR.'
 fi
+generation_substep_end
 
+generation_substep_start 'Core runtime stock helpers'
 # Remove artifacts produced by the abandoned exact-path vanilla Pop-demand
 # generator. Leaving either file in a working tree would reintroduce an override
 # or duplicate the tracked injection script value during local installation.
@@ -66,14 +113,21 @@ python3 "$repo_root/tools/postprocess_perf14_overmaterialized_repair.py" \
 	"$repo_root/packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_guarded_test_effects.txt" \
 	"$repo_root/packages/cbp_core_tests/in_game/common/scripted_effects/cbp_perf14_test_effects.txt"
 bash "$repo_root/tools/generate_pr71_active_good_dispatch_helpers.sh"
+generation_substep_end
+
+generation_substep_start 'US-04 Pop-demand adapters'
 "$repo_root/tools/generate_us04_pop_demand_helpers.sh"
 bash "$repo_root/tools/generate_us04_local_pop_demand_modifiers.sh"
 python3 "$repo_root/tools/validate_us04_pop_demand_architecture.py"
+generation_substep_end
 
+generation_substep_start 'Trade, UI, and promoted-destination helpers'
 "$repo_root/tools/generate_good_transport_helpers.sh"
 bash "$repo_root/tools/generate_us10_ui_helpers.sh"
 bash "$repo_root/tools/generate_us20_promoted_destination_receipt_dispatchers.sh"
+generation_substep_end
 
+generation_substep_start 'US-09 buildings, RGO prices, and Pop promotion'
 us09_enabled="${MODEU5_ENABLE_US09_STATIC_OVERRIDES:-true}"
 defines_output="$repo_root/loading_screen/common/defines/00_defines.txt"
 
@@ -107,10 +161,12 @@ else
 			cbg_building_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_building_manifest.json"
 			cbg_building_output_multiplier="$(awk -v value="${MODEU5_US09_BONUS_PERCENT:-5}" 'BEGIN { printf "%.12f", 1 + value / 100 }')"
 			cbg_building_trade_multiplier="$(awk -v value="${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" 'BEGIN { printf "%.12f", 1 + value / 100 }')"
-			python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_building_spec.py" \
-				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
-				--output "$cbg_building_spec" \
-				--output-multiplier "$cbg_building_output_multiplier" \
+				python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_building_spec.py" \
+					--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
+					--output "$cbg_building_spec" \
+					--localization-output "$repo_root/packages/cbp_economy_rebalance/main_menu/localization/english/cbp_us09_production_methods_l_english.yml" \
+					--generation-mode "${MODEU5_BUILDING_GENERATION_MODE:-override}" \
+					--output-multiplier "$cbg_building_output_multiplier" \
 				--trade-capacity-multiplier "$cbg_building_trade_multiplier" \
 				--maintenance-multiplier "${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.7}" \
 				--trade-maintenance-multiplier "${MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}" \
@@ -120,15 +176,15 @@ else
 				"$repo_root/packages/cbp_economy_rebalance" \
 				"$cbg_building_manifest" \
 				--adopt-marked-output-tree in_game/common/building_types \
-				--adopt-output-marker '# Generated by tools/generate_us09_economy_overrides.sh.'
-			python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
+				--adopt-output-marker '# Generated by tools/cbg/adapters/cbp/generate_cbp_cbg_building_spec.py.'
+			run_generation_cbg python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--spec "$cbg_building_spec" \
 				--output-root "$repo_root/packages/cbp_economy_rebalance" \
 				--manifest "$cbg_building_manifest" \
 				--adopt-identical-output \
 				--adopt-marked-output-tree in_game/common/building_types \
-				--adopt-output-marker '# Generated by tools/generate_us09_economy_overrides.sh.'
+				--adopt-output-marker '# Generated by tools/cbg/adapters/cbp/generate_cbp_cbg_building_spec.py.'
 			cbg_rgo_spec="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_rgo_prices_spec.json"
 			cbg_rgo_manifest="$repo_root/packages/cbp_economy_rebalance/cbp_generated/cbg_rgo_prices_manifest.json"
 			python3 "$repo_root/tools/cbg/adapters/cbp/generate_cbp_cbg_rgo_prices_spec.py" \
@@ -136,7 +192,7 @@ else
 				--percent "${MODEU5_US09_RGO_PRICE_OFFSET_PERCENT:-8}" \
 				--output "$cbg_rgo_spec"
 			bootstrap_cbg_manifest "$cbg_rgo_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_rgo_manifest"
-			python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+			run_generation_cbg python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--spec "$cbg_rgo_spec" \
 				--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -150,7 +206,7 @@ else
 				--laborer-percent "${EXTRA_LABORER_PROMOTION_SPEED:-10}" \
 				--output "$cbg_pop_spec"
 			bootstrap_cbg_manifest "$cbg_pop_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_pop_manifest"
-			python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+			run_generation_cbg python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
 				--game-root "${EU5_GAME_COMMON_DIR%/in_game/common}" \
 				--spec "$cbg_pop_spec" \
 				--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -162,11 +218,14 @@ else
 	fi
 
 fi
+generation_substep_end
 
+generation_substep_start 'US-177 food, political rewards, and minting'
 # US-177 is package-owned independently from US-09. It records the authoritative
 # vanilla food-good set, scans the complete vanilla source tree for
-# minting_income_factor, and composes building changes with whichever exact-path
-# building files are already present.
+# minting_income_factor, and composes building changes into the same complete
+# exact-path sources or additive-only INJECT objects already planned by the
+# building adapter.
 if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	us177_common_dir="${EU5_GAME_COMMON_DIR%/}"
 	us177_game_root="${us177_common_dir%/in_game/common}"
@@ -183,7 +242,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--divisor "${MODEU5_US177_FOOD_PRODUCTION_DIVISOR:-3}" \
 		--output "$cbg_food_spec"
 	bootstrap_cbg_manifest "$cbg_food_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_food_manifest"
-	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+	run_generation_cbg python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
 		--game-root "$us177_game_root" \
 		--spec "$cbg_food_spec" \
 		--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -198,7 +257,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--minting-discovery-manifest "$repo_root/packages/cbp_economy_rebalance/cbp_generated/us177_minting_income_manifest.json" \
 		--political-discovery-manifest "$repo_root/packages/cbp_economy_rebalance/cbp_generated/political_reward_overrides_manifest.json"
 	bootstrap_cbg_manifest "$cbg_political_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_political_manifest"
-	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+	run_generation_cbg python3 "$repo_root/tools/cbg/cbp_community_balance_generator.py" \
 		--game-root "$us177_game_root" \
 		--spec "$cbg_political_spec" \
 		--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -214,7 +273,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 		--game-root "$us177_game_root" \
 		--output "$cbg_default_values_spec"
 	bootstrap_cbg_manifest "$cbg_default_values_spec" "$repo_root/packages/cbp_economy_rebalance" "$cbg_default_values_manifest"
-	python3 "$repo_root/tools/cbg/community_balance_generator.py" \
+	run_generation_cbg python3 "$repo_root/tools/cbg/community_balance_generator.py" \
 		--game-root "$us177_game_root" \
 		--spec "$cbg_default_values_spec" \
 		--output-root "$repo_root/packages/cbp_economy_rebalance" \
@@ -230,6 +289,7 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 else
 	printf '%s\n' 'Skipping US-177 source generation; set EU5_GAME_COMMON_DIR to vanilla game/in_game/common.'
 fi
+generation_substep_end
 
 trap - ERR
 printf '\n'

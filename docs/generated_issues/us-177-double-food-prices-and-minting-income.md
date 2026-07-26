@@ -105,12 +105,12 @@ This is an exact gross-income doubling, including negative vanilla sources.
 Inflation fields, inflation thresholds, and unrelated monetary modifiers are not
 scaled.
 
-The supported source audit currently contains:
+The legacy source audit currently records:
 
 ```txt
-19 non-building exact-path files / 26 minting assignments
-1 composed building file / 2 minting assignments
-20 exact-path files / 28 minting assignments total
+19 non-building source files / 26 minting assignments
+1 composed building source / 2 minting assignments
+20 source files / 28 minting assignments total
 ```
 
 ## Generation model
@@ -134,18 +134,18 @@ python3 tools/generate_us177_minting_overrides.py \
   --multiplier 2
 ```
 
-This generator scans vanilla common data, events, static modifiers, and auto
-modifiers. It:
+This legacy compiler scans Vanilla common data, events, static modifiers, and
+auto modifiers. CBG consumes its change plan and:
 
-- creates only exact-path overrides for files containing numeric
-  `minting_income_factor` assignments;
+- emits CBP-prefixed complete `REPLACE:<object>` entries for common databases
+  and exact-path overrides only for event databases;
 - preserves comments, BOM state, unrelated definitions, and numeric precision;
 - fails on dynamic expressions, unsupported syntax, or ambiguous assignments;
 - writes source hashes, object paths, old values, and new values to
   `cbp_generated/us177_minting_income_manifest.json`.
 
-Building definitions are already owned by the composed US-07/US-09 exact-path
-generator. They are handled by:
+Building definitions are already owned by the composed US-07/US-09 building
+adapter. Its legacy reference is handled by:
 
 ```bash
 python3 tools/postprocess_us177_minting_building_overrides.py \
@@ -172,8 +172,9 @@ The validator proves:
 - package `FOOD_PRICE` equals the independently configured value and no other
   numeric market define is present in the US-177 file;
 - the food-good manifest exactly matches every vanilla good with `food > 0`;
-- generated exact-path goods overrides divide every positive vanilla `food`
-  value by the configured divisor without changing unrelated goods fields;
+- generated `REPLACE:<good>` objects divide every positive Vanilla `food`
+  value by the configured divisor without changing unrelated fields in those
+  goods or redeclaring unrelated goods;
 - the universal minting base is exactly `minting_income_factor = 1.0`;
 - every supported vanilla numeric minting source is present once and doubled;
 - building minting sources remain composed with the shared building generator;

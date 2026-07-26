@@ -114,6 +114,9 @@ cbp_require_match 'cbp_render_template_to_stdout' \
 cbp_require_match 'MODEU5_ENABLE_DEBUG_RUNTIME=false' \
 	".cbp.local.env.template" \
 	'Local env template must default ModeU5 debug runtime to false'
+cbp_require_match '^MODEU5_BUILDING_GENERATION_MODE=override' \
+	".cbp.local.env.template" \
+	'Local env template must default building generation to proven override mode'
 cbp_require_match '^MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER=0\.7' \
 	".cbp.local.env.template" \
 	'Local env template must expose the non-trade building maintenance multiplier'
@@ -154,6 +157,7 @@ cbp_require_file "tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec
 cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_pop_promotion_parity.sh"
 cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_building_parity.sh"
 cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_political_minting_parity.sh"
+cbp_require_file "tools/cbg/validator/cbp/validate_vanilla_derived_outputs.py"
 cbp_require_file "tools/cbg/validator/cbp/validate_cbp_cbg_master_spec.py"
 cbp_require_file "tools/cbg/tests/test_community_balance_generator.py"
 cbp_require_file "tools/cbg/examples/community_balance_spec.example.json"
@@ -178,6 +182,27 @@ python3 "$repo_root/tools/validate_audit_catalog.py"
 cbp_require_match 'install_local_packages\.sh --skip-generate' \
 	"tools/dev_prepare_game.sh" \
 	'Developer preparation must not regenerate after the validated generation pass'
+cbp_require_match 'cbp_check_patch_hygiene.*git diff --check' \
+	"tools/dev_prepare_game.sh" \
+	'Developer preparation must report working-tree whitespace without blocking installation'
+cbp_require_match 'cbp_check_patch_hygiene.*git diff --cached --check' \
+	"tools/dev_prepare_game.sh" \
+	'Developer preparation must report staged whitespace without blocking installation'
+cbp_require_match '"render_mode":[[:space:]]*"normalized"' \
+	"tools/cbg/adapters/cbp/generate_cbp_cbg_political_minting_spec.py" \
+	'Political/minting exact-path outputs must normalize inherited Vanilla whitespace'
+cbp_require_match 'prepare_clean_install' \
+	"tools/install_local_packages.sh" \
+	'Local installation must purge every managed package root before copying'
+cbp_require_match 'rm -rf -- "\$destination"' \
+	"tools/install_local_packages.sh" \
+	'Local installation must remove complete managed package roots so renamed files cannot survive'
+cbp_require_match 'legacy_package_ids' \
+	"tools/install_local_packages.sh" \
+	'Local installation must remove known legacy monolithic deployments'
+cbp_require_match 'check_payload_mirror' \
+	"tools/install_local_packages.sh" \
+	'Local installation must compare deployed packages with their source payloads'
 cbp_require_match 'dev_prepare_game\.sh' \
 	"tools/README.md" \
 	'Tools documentation must advertise the canonical developer preparation command'
@@ -234,6 +259,8 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" ]]; then
 	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_pop_promotion_parity.sh"
 	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_building_parity.sh"
 	"$repo_root/tools/cbg/validator/cbp/validate_cbp_cbg_political_minting_parity.sh"
+	python3 "$repo_root/tools/cbg/validator/cbp/validate_vanilla_derived_outputs.py" \
+		--game-root "$cbg_game_root"
 else
 	printf '%s\n' \
 		'SKIP: focused CBG family parity requires local Vanilla EU5 sources.'

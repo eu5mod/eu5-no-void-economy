@@ -1,0 +1,46 @@
+name: US04 Sparse Indexes
+
+# Validates work selection, writer repair, and persistent-state classification.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate US-04 helpers
+        run: bash tools/generate_us04_pop_demand_helpers.sh
+
+      - name: Validate sparse US-04 work indexes
+        run: |
+          set -o pipefail
+          python3 tools/validate_cbp_us04_sparse_indexes.py 2>&1 | tee us04-sparse-index-validation.log
+
+      - name: Audit persistent state inventory
+        run: |
+          set -o pipefail
+          bash tools/audit_cbp_persistent_state.sh 2>&1 | tee us04-sparse-index-audit.log
+
+      - name: Upload sparse-index diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: us04-sparse-index-diagnostics
+          path: |
+            us04-sparse-index-validation.log
+            us04-sparse-index-audit.log
+          if-no-files-found: ignore
