@@ -14,9 +14,8 @@ on:
       - 'in_game/common/scripted_effects/zz_cbp_promoted_market_metric_guards.txt'
       - 'in_game/events/cbp_us17_modifier_refresh_events.txt'
       - 'loading_screen/common/defines/cbp_trade_defines.txt'
-      - 'packages/cbp_economy_rebalance/in_game/common/estate_privileges/burghers_estate.txt'
-      - 'packages/cbp_economy_rebalance/in_game/common/estate_privileges/nobles_estate.txt'
-      - 'packages/cbp_economy_rebalance/in_game/common/estate_privileges/zz_cbp_us17_trade_efficiency_refresh_injections.txt'
+      - 'packages/cbp_economy_rebalance/in_game/common/estate_privileges/cbp_burghers_estate.txt'
+      - 'packages/cbp_economy_rebalance/in_game/common/estate_privileges/cbp_nobles_estate.txt'
       - 'tools/validate_us17_modifier_refresh_lifecycle.py'
       - '.github/workflows/us17-modifier-refresh-lifecycle.yml'
 

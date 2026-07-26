@@ -20,8 +20,10 @@ tools/generated/
 
 # Vanilla-derived CBG text outputs are local build artifacts. They are generated
 # from the installed EU5 version and owned through their CBG manifests.
-/main_menu/common/static_modifiers/cbp_location.txt
-/packages/cbp_economy_rebalance/in_game/common/building_types/cbp_*.txt
+#/main_menu/common/static_modifiers/cbp_location.txt
+#/main_menu/common/static_modifiers/location.txt
+#/packages/cbp_economy_rebalance/in_game/common/building_types/*.txt
+#/packages/cbp_economy_rebalance/in_game/common/prices/cbp_00_hardcoded.txt
 
 # Python/tool caches.
 *.py[cod]
@@ -30,4 +32,4 @@ tools/generated/
 .ruff_cache/
 
 # Full vanilla file copied and patched locally by the defines generator.
-/loading_screen/common/defines/00_defines.txt
+#/loading_screen/common/defines/00_defines.txt
