@@ -64,6 +64,7 @@ def object_blocks(content: bytes, *, strip_replace: bool) -> dict[str, bytes]:
 
 
 objects_checked = 0
+exact_common_files = 0
 for relative in paths:
     candidate = root / "candidate" / relative
     if "/common/" not in f"/{relative}":
@@ -72,23 +73,44 @@ for relative in paths:
         continue
 
     path = Path(relative)
-    if not path.name.startswith("cbp_"):
-        raise SystemExit(f"Common database output is not CBP-prefixed: {relative}")
-    source_relative = path.parent / path.name.removeprefix("cbp_")
+    exact_path = not path.name.startswith("cbp_")
+    source_relative = (
+        path
+        if exact_path
+        else path.parent / path.name.removeprefix("cbp_")
+    )
     reference = root / "reference" / source_relative
     reference_objects = object_blocks(reference.read_bytes(), strip_replace=False)
     candidate_content = candidate.read_bytes()
-    candidate_objects = object_blocks(candidate_content, strip_replace=True)
-    replace_entries = set(
-        match.decode()
-        for match in re.findall(
-            rb"^[ \t]*REPLACE:([A-Za-z0-9_.:-]+)[ \t]*=",
+    candidate_objects = object_blocks(
+        candidate_content,
+        strip_replace=not exact_path,
+    )
+    if exact_path:
+        if re.search(
+            rb"^[ \t]*(?:REPLACE|INJECT|TRY_INJECT):",
             candidate_content,
             re.MULTILINE,
+        ):
+            raise SystemExit(
+                f"Exact-path common database contains entry prefixes: {relative}"
+            )
+        if set(reference_objects) != set(candidate_objects):
+            raise SystemExit(
+                f"Political/minting exact-path object scope mismatch: {relative}"
+            )
+        exact_common_files += 1
+    else:
+        replace_entries = set(
+            match.decode()
+            for match in re.findall(
+                rb"^[ \t]*REPLACE:([A-Za-z0-9_.:-]+)[ \t]*=",
+                candidate_content,
+                re.MULTILINE,
+            )
         )
-    )
-    if replace_entries != set(candidate_objects):
-        raise SystemExit(f"Political/minting REPLACE scope mismatch: {relative}")
+        if replace_entries != set(candidate_objects):
+            raise SystemExit(f"Political/minting REPLACE scope mismatch: {relative}")
     for object_name, body in candidate_objects.items():
         if reference_objects.get(object_name) != body:
             raise SystemExit(
@@ -99,6 +121,7 @@ for relative in paths:
 
 print(
     f"CBP/CBG political/minting parity passed: {len(paths)} files, "
-    f"{objects_checked} common-database REPLACE objects."
+    f"{objects_checked} common-database objects, "
+    f"{exact_common_files} exact-path nested-registry files."
 )
 PY

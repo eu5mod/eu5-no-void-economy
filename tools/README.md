@@ -231,18 +231,28 @@ tools/generated/us09_economy_overrides/common/building_types/
 tools/generated/us09_economy_overrides/common/prices/
 ```
 
-When run through `./tools/generate_all.sh`, CBG writes tracked, CBP-prefixed
-Rebalance Economy overrides under:
+When run through `./tools/generate_all.sh`, CBG writes tracked Rebalance
+Economy overrides under:
 
 ```txt
-packages/cbp_economy_rebalance/in_game/common/building_types/cbp_*.txt
+packages/cbp_economy_rebalance/in_game/common/building_types/*.txt
 packages/cbp_economy_rebalance/in_game/common/prices/
 ```
 
-Structural building changes use complete `REPLACE:<building>` objects.
-Modifier-only changes use sparse `cbp_inject_*.txt` files whose additive values
-are calculated as `target - Vanilla`. Unchanged Vanilla buildings are not
-copied into the mod.
+`MODEU5_BUILDING_GENERATION_MODE=override` is the default: every affected
+Vanilla building source is generated as a complete same-path file.
+
+Set `MODEU5_BUILDING_GENERATION_MODE=compatibility` to keep only structural and
+maintenance changes in exact-path files. Additive changes then use sparse
+`cbp_<field>_<source>.txt` INJECT files whose values are calculated as
+`target - Vanilla`; prefixed production alternatives use separate
+`cbp_us09_production_methods_<source>.txt` files.
+
+Do not prefix nested production-method containers with `REPLACE:` or `INJECT:`.
+Do not emit complete `REPLACE:<building>` objects that reuse Vanilla nested
+production-method keys. See
+`docs/technical/BUILDING_OVERRIDE_GENERATION.md` for the runtime decision
+record and the inspected M&T comparison.
 
 The building override generator composes the approved static changes that share
 the same vanilla files:
@@ -260,6 +270,7 @@ Pass the desired compensation percentage explicitly. Example:
 ```bash
 ./tools/cbg/adapters/cbp/helpers/compile_us09_economy_policy.sh 7.5 --common-dir "<EU5_INSTALL_DIR>/game/in_game/common"
 MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT=15 ./tools/generate_all.sh
+MODEU5_BUILDING_GENERATION_MODE=compatibility ./tools/generate_all.sh
 ```
 
 If `.cbp.local.env` defines `EU5_GAME_COMMON_DIR`, `--common-dir` is not
@@ -285,6 +296,7 @@ python3 tools/validate_us08_building_maintenance_overrides.py \
   --common-dir "$EU5_GAME_COMMON_DIR" \
   --package-common-dir packages/cbp_economy_rebalance/in_game/common \
   --trade-capacity-percent "${MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT:-15}" \
+  --generation-mode "${MODEU5_BUILDING_GENERATION_MODE:-override}" \
   --maintenance-multiplier 0.7 \
   --trade-building-maintenance-multiplier 0.5
 ```
@@ -302,6 +314,12 @@ Use `--target PATH` for a non-default local mod directory, `--keep-logs` when
 preserving the current logs is intentional, or `--skip-idempotence` for a
 faster explicitly non-canonical iteration. The script does not launch EU5 or
 modify Git state.
+
+Local preparation reports trailing whitespace and indentation-only Git
+findings as warnings so they cannot prevent a valid package from being
+installed for runtime testing. Structural patch errors, including unresolved
+conflict markers, remain blocking. CI still runs strict `git diff --check`
+validation and rejects every whitespace finding before merge.
 
 Installation is a clean publication, not an incremental copy. Before copying
 the first package, `install_local_packages.sh` removes and recreates every

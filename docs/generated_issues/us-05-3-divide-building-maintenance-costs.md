@@ -25,15 +25,13 @@ Activation: launcher/playset package selection
 Behavior when absent: vanilla building maintenance quantities remain unchanged
 ```
 
-The implementation is composed into the Economy building-object generator
+The implementation is composed into the Economy building-source generator
 because US-07, US-08/US-05.3, US-09, and US-177 can all touch the same Vanilla
-building. Maintenance changes are structural and therefore produce one complete
-replacement object for each affected building. Modifier-only changes in other
-buildings may instead produce sparse additive injections. This avoids competing
-static overrides while leaving every untouched Vanilla object under Vanilla
-ownership. Exact-path full-file copies were rejected because EU5 loaded them
-beside Vanilla and reported duplicate database and production-method
-registrations.
+source. Maintenance changes are structural and therefore promote the complete
+Vanilla source file to exact-path ownership. A source with modifier-only changes
+may instead produce sparse additive injections. This avoids competing static
+overrides. Complete `REPLACE:<building>` objects were rejected after runtime
+reported duplicate production-method registrations for reused nested keys.
 
 ## Implementation rule
 
@@ -65,12 +63,13 @@ python3 tools/validate_us08_building_maintenance_overrides.py \
 
 The validator proves:
 
-- every changed Vanilla maintenance source has a generated CBP-prefixed output;
-- every maintenance-changed building is emitted once as a complete
-  `REPLACE:<building>` object;
+- every structurally changed Vanilla maintenance source has a complete
+  exact-path output;
+- every maintenance-changed building is present once in that complete source;
 - modifier-only buildings may be emitted once as sparse `INJECT:<building>`
   objects containing exact `target - Vanilla` deltas;
-- no exact-path Vanilla building copy exists;
+- no CBP-prefixed structural building file exists;
+- no production-method container uses a nested `REPLACE:` or `INJECT:` prefix;
 - every non-trade maintenance-good quantity is exactly `source * 0.7`;
 - every trade-category maintenance-good quantity is exactly `source * 0.5`;
 - the generated body matches the shared transformer used by the generator.
@@ -89,6 +88,6 @@ python3 tools/validate_cmm_configuration.py
 git diff --check
 ```
 
-Runtime validation must confirm that the generated replacement objects
+Runtime validation must confirm that the generated exact-path sources
 load without duplicate building keys, duplicated production-method names, or
 unexpected-token errors in `error.log`.

@@ -55,6 +55,40 @@ cbp_console_failure() {
 	printf '\n' >&2
 }
 
+cbp_console_warning() {
+	local message="$1"
+	cbp_console_styled '1;33' '[WARNING]' 2 >&2
+	printf ' ' >&2
+	cbp_console_styled '1;33' "$message" 2 >&2
+	printf '\n' >&2
+}
+
+cbp_check_patch_hygiene() {
+	local label="$1"
+	shift
+	local output
+	local diagnostics
+	local unsafe
+	if output="$("$@" 2>&1)"; then
+		return 0
+	fi
+	diagnostics="$(
+		printf '%s\n' "$output" |
+			grep -E '^[^+].*:[0-9]+: ' || true
+	)"
+	unsafe="$(
+		printf '%s\n' "$diagnostics" |
+			grep -Ev ':[0-9]+: (trailing whitespace\.|space before tab in indent\.|new blank line at EOF\.)$' ||
+			true
+	)"
+	if [[ -z "$diagnostics" || -n "$unsafe" ]]; then
+		printf '%s\n' "$output" >&2
+		return 1
+	fi
+	cbp_console_warning "$label has non-blocking whitespace findings:"
+	printf '%s\n' "$output" >&2
+}
+
 cbp_display_path() {
 	local input="$1"
 	local directory

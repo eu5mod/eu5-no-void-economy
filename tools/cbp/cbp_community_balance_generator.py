@@ -9,7 +9,9 @@ modes:
     Render complete changed top-level objects and mark them ``REPLACE:``.
 
 ``inject_objects``
-    Render sparse top-level object fragments and mark them ``INJECT:``.
+    Render sparse top-level object fragments and mark them ``INJECT:``. An
+    explicit output may use any ``cbp_``-prefixed basename; the automatic
+    fallback retains the more descriptive ``cbp_inject_`` prefix.
 """
 
 from __future__ import annotations
@@ -133,7 +135,7 @@ def prepare_spec(
             raise ValueError(
                 f"{source}: {requested_mode} output must remain beside its source file"
             )
-        required_prefix = "cbp_" if entry_mode == "REPLACE" else "cbp_inject_"
+        required_prefix = "cbp_"
         if not output_relative.name.startswith(required_prefix):
             raise ValueError(
                 f"{source}: {requested_mode} output filename must start with "

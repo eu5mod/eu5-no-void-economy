@@ -12,11 +12,12 @@
 ## Static generation contract
 
 Building files under `packages/cbp_economy_rebalance/in_game/common/building_types`
-are generated, tracked CBP-prefixed database-entry files. Structural warehouse
-and marketplace-chain changes use complete `REPLACE:<building>` objects.
-Modifier-only stockpile cancellation uses sparse `INJECT:<building>` deltas.
-Do not hand-edit them. Exact-path full-file copies are forbidden because EU5
-loads them beside Vanilla and duplicates database entries.
+are generated and tracked. Structural warehouse and marketplace-chain changes
+are composed into their complete exact-path Vanilla source. A source with
+modifier-only stockpile cancellation may use sparse `INJECT:<building>` deltas.
+Do not hand-edit them. Complete `REPLACE:<building>` objects are forbidden for
+these structural changes because runtime showed that reused nested
+production-method keys remain duplicated.
 
 ## Runtime modifier contract
 

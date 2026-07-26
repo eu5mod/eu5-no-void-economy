@@ -24,14 +24,14 @@ if root_anchor not in text:
 text = text.replace(root_anchor, f'repo_root="{repo_root}"', 1)
 
 building_root = repo_root / "packages/cbp_economy_rebalance/in_game/common/building_types"
-trade_output = building_root / "cbp_trade_buildings.txt"
-market_output = building_root / "cbp_market_buildings.txt"
+trade_output = building_root / "trade_buildings.txt"
+market_output = building_root / "market_buildings.txt"
 generated_outputs = [path for path in (trade_output, market_output) if path.is_file()]
 
 if generated_outputs and len(generated_outputs) != 2:
     raise SystemExit(
-        "Incomplete CBG building generation: both cbp_trade_buildings.txt and "
-        "cbp_market_buildings.txt REPLACE outputs must be present"
+        "Incomplete CBG building generation: both trade_buildings.txt and "
+        "market_buildings.txt exact-path outputs must be present"
     )
 
 using_generated_outputs = len(generated_outputs) == 2
@@ -50,7 +50,7 @@ for old, new in replacements.items():
 if not using_generated_outputs:
     # A clean checkout intentionally has no Vanilla-derived building artifacts.
     # Keep validating all source-owned package files, but skip checks whose only
-    # input is a locally generated CBP-prefixed REPLACE building file.
+    # input is a locally generated exact-path building file.
     required = '''require_file "$us09_trade_buildings_file"\nrequire_file "$us09_market_buildings_file"\n'''
     if required not in text:
         raise SystemExit("Package-validator clean-state require_file anchor is missing")

@@ -207,9 +207,8 @@ require_match 'name = cbp_war_package_version' \
 	'War package version missing'
 
 us09_prices_file="packages/cbp_economy_rebalance/in_game/common/prices/cbp_00_hardcoded.txt"
-us09_trade_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/cbp_trade_buildings.txt"
-us09_trade_buildings_inject_file="packages/cbp_economy_rebalance/in_game/common/building_types/cbp_inject_trade_buildings.txt"
-us09_market_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/cbp_market_buildings.txt"
+us09_trade_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/trade_buildings.txt"
+us09_market_buildings_file="packages/cbp_economy_rebalance/in_game/common/building_types/market_buildings.txt"
 us09_rgo_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_us09_rgo_static_modifiers.txt"
 us09_rgo_size_effects_file="packages/cbp_economy_rebalance/in_game/common/scripted_effects/cbp_us09_rgo_size_effects.txt"
 us09_market_stockpile_static_modifier_file="packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_market_stockpile_capacity.txt"
@@ -217,7 +216,6 @@ us09_market_stockpile_effects_file="packages/cbp_economy_rebalance/in_game/commo
 us09_trade_capacity_percent=""
 require_file "$us09_prices_file"
 require_file "$us09_trade_buildings_file"
-require_file "$us09_trade_buildings_inject_file"
 require_file "$us09_market_buildings_file"
 require_file "$us09_rgo_static_modifier_file"
 require_file "$us09_rgo_size_effects_file"
@@ -230,7 +228,7 @@ require_match '^REPLACE:expand_rgo_gathering = \{$' \
 	"$us09_prices_file" \
 	'US-09 RGO price override must replace the Vanilla expand_rgo_gathering key without shadowing unrelated prices'
 us09_trade_capacity_percent="$(
-	python3 - "$us09_trade_buildings_file" "$us09_trade_buildings_inject_file" <<'PY'
+	python3 - "$us09_trade_buildings_file" <<'PY'
 from __future__ import annotations
 
 import math
@@ -238,12 +236,7 @@ import re
 import sys
 from pathlib import Path
 
-paths = [Path(argument) for argument in sys.argv[1:]]
-file_lines = [
-    path.read_text(encoding="utf-8-sig").splitlines()
-    for path in paths
-]
-lines = [line for current in reversed(file_lines) for line in current]
+lines = Path(sys.argv[1]).read_text(encoding="utf-8-sig").splitlines()
 
 def header_value(label: str) -> tuple[float, float | None]:
     number = r"-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)"
@@ -484,7 +477,7 @@ if [[ -e packages/cbp_economy_rebalance/main_menu/common/static_modifiers/cbp_bu
 fi
 # Preserve commented Vanilla provenance while rejecting an active assignment.
 # A plain token search incorrectly flags lines such as
-# `# building_upkeep_multiplier = 0.001` in generated REPLACE building files.
+# `# building_upkeep_multiplier = 0.001` in generated building files.
 if search_quiet '^[ \t]*building_upkeep_multiplier[ \t]*=' \
 	packages/cbp_economy_rebalance/in_game/common/auto_modifiers \
 	packages/cbp_economy_rebalance/main_menu/common/static_modifiers
@@ -497,25 +490,35 @@ if [[ -n "${EU5_GAME_COMMON_DIR:-}" && -d "${EU5_GAME_COMMON_DIR:-}/building_typ
 	python3 tools/validate_us08_building_maintenance_overrides.py \
 		--common-dir "$EU5_GAME_COMMON_DIR" \
 		--package-common-dir packages/cbp_economy_rebalance/in_game/common \
+		--generation-mode "${MODEU5_BUILDING_GENERATION_MODE:-override}" \
 		--us09-percent "${MODEU5_US09_BONUS_PERCENT:-10}" \
 		--trade-capacity-percent "$us09_trade_capacity_percent" \
 		--maintenance-multiplier "${MODEU5_US08_BUILDING_MAINTENANCE_MULTIPLIER:-0.7}" \
 			--trade-building-maintenance-multiplier "${MODEU5_US08_TRADE_BUILDING_MAINTENANCE_MULTIPLIER:-0.5}"
 fi
 
-unsafe_building_outputs="$(
+unsafe_building_replace_outputs="$(
 	find packages/cbp_economy_rebalance/in_game/common/building_types \
-		-maxdepth 1 -type f -name '*.txt' ! -name 'cbp_*.txt' -print 2>/dev/null | sort
+		-maxdepth 1 -type f -name 'cbp_*.txt' ! -name 'cbp_inject_*.txt' -print 2>/dev/null | sort
 )"
-if [[ -n "$unsafe_building_outputs" ]]; then
+if [[ -n "$unsafe_building_replace_outputs" ]]; then
 	printf '%s\n' \
-		'CBP building outputs must use prefixed REPLACE/INJECT object files.' \
-		'Complete exact-path copies duplicate Vanilla database entries:' \
-		"$unsafe_building_outputs" >&2
+		'CBP structural building outputs must use complete exact-path files.' \
+		'REPLACE:<building> does not purge Vanilla nested production methods:' \
+		"$unsafe_building_replace_outputs" >&2
+	exit 1
+fi
+if search_lines \
+	'^[[:space:]]*(REPLACE|INJECT|TRY_INJECT):(unique_production_methods|production_methods|possible_production_methods)[[:space:]]*=' \
+	packages/cbp_economy_rebalance/in_game/common/building_types
+then
+	printf '%s\n' \
+		'Nested production-method containers must use plain field names.' \
+		'No inspected M&T building uses REPLACE/INJECT on these containers, and CBP has no confirmed recursive replacement contract.' >&2
 	exit 1
 fi
 if ! find packages/cbp_economy_rebalance/in_game/common/building_types \
-	-maxdepth 1 -type f -name 'cbp_*.txt' -print0 |
+	-maxdepth 1 -type f -name '*.txt' -print0 |
 	while IFS= read -r -d '' building_output; do
 		case "$(basename "$building_output")" in
 			cbp_inject_*)
@@ -526,15 +529,30 @@ if ! find packages/cbp_economy_rebalance/in_game/common/building_types \
 				fi
 				;;
 			*)
-				if ! grep -Eq '^[[:space:]]*REPLACE:[A-Za-z0-9_.:-]+[[:space:]]*=' "$building_output" ||
-					grep -Eq '^[[:space:]]*(INJECT|TRY_INJECT):' "$building_output"; then
-					printf 'Generated structural building output must contain only REPLACE entries: %s\n' "$building_output" >&2
+				if grep -Eq '^[[:space:]]*(REPLACE|INJECT|TRY_INJECT):' "$building_output"; then
+					printf 'Generated exact-path building output must contain plain Vanilla keys: %s\n' "$building_output" >&2
 					exit 1
 				fi
 				;;
 		esac
 	done
 then
+	exit 1
+fi
+python3 tools/validate_cbp_building_injections.py
+
+political_gods_file="packages/cbp_economy_rebalance/in_game/common/gods/hellenism.txt"
+stale_political_gods_file="packages/cbp_economy_rebalance/in_game/common/gods/cbp_hellenism.txt"
+require_file "$political_gods_file"
+if [[ -e "$stale_political_gods_file" ]]; then
+	printf '%s\n' \
+		'Nested omen registries require an exact-path gods override.' \
+		"Remove the runtime-unsafe REPLACE output: $stale_political_gods_file" >&2
+	exit 1
+fi
+if grep -Eq '^[[:space:]]*(REPLACE|INJECT|TRY_INJECT):' "$political_gods_file"; then
+	printf 'Exact-path gods output must contain plain Vanilla keys: %s\n' \
+		"$political_gods_file" >&2
 	exit 1
 fi
 

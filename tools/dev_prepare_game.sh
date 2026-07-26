@@ -130,8 +130,8 @@ python3 tools/validate_cmm_configuration.py
 python3 tools/validate_mandatory_expenses.py
 python3 tools/validate_market_price_speed.py
 python3 tools/validate_audit_catalog.py
-git diff --check
-git diff --cached --check
+cbp_check_patch_hygiene 'Working tree' git diff --check
+cbp_check_patch_hygiene 'Staging area' git diff --cached --check
 
 step '4/7' 'Install the generated and validated package set'
 if ((${#target_args[@]} > 0)); then

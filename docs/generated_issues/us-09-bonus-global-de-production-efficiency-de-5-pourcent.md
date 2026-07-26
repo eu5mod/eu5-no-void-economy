@@ -13,25 +13,24 @@ As a player, I want a global +5% Production Efficiency compensation for ModeU5's
 ## Functional objective
 
 Restore a target `+X%` effective production compensation for the Rebalance
-Economy package while preserving the stock-aware production chain. Building
-changes are shipped in CBP-prefixed database-entry files. The generator chooses
-the entry mode from the requested result:
+Economy package while preserving the stock-aware production chain. The
+generator chooses the source ownership mode from the requested result:
 
-- complete `REPLACE:<building>` objects for structural changes such as
+- complete exact-path Vanilla source files for structural changes such as
   production output or maintenance;
-- sparse `INJECT:<building>` objects containing `target - Vanilla` for proven
-  additive modifier fields.
+- sparse `INJECT:<building>` objects containing `target - Vanilla` when the
+  source has proven additive modifier fields only.
 
-Unchanged Vanilla buildings are not redeclared. Earlier exact-path full-file
-copies were rejected because EU5 loaded them beside Vanilla and reported
-duplicate building and nested production-method registrations.
+Complete `REPLACE:<building>` objects were rejected after runtime showed
+duplicate nested production-method registrations. Nested production-method
+containers never receive a `REPLACE:` or `INJECT:` prefix.
 
 Because US-09, US-07, and US-08/US-05.3 can all edit vanilla
 `common/building_types` static objects, the generated Economy override composes
-all changes for one building before choosing its materialization mode. If any
+all changes for one source before choosing its materialization mode. If any
 rule requires structural replacement, every change is folded into that one
-complete replacement. Otherwise, the additive modifier changes share one
-sparse injection.
+complete exact-path source. Otherwise, additive modifier changes share sparse
+injections.
 
 ## Module / availability
 
@@ -59,10 +58,10 @@ Feeds counters to: vanilla production read at step 4
 | Iterate/apply to countries | none → country | `every_country` plus `add_country_modifier` | CONFIRMED | 001, 009 |
 | Monthly invocation at runtime step 3 | country | `monthly_country_pulse` → shared ModeU5 monthly dispatcher | CONFIRMED | 011 |
 | Transformation compatibility | ModeU5 production chain | apply before production read; preserve stock-add contract | CONFIRMED | internal |
-| Static production output field | local Vanilla `common/building_types` | `output = <float>` inside a complete `REPLACE:<building>` definition | CONFIRMED_STATIC / TO_TEST_RUNTIME | 118 |
+| Static production output field | local Vanilla `common/building_types` | prefixed `cbp_us09_*` alternative inside a sparse `INJECT:<building>`; same Vanilla inputs/category and multiplied `output` | CONFIRMED_STATIC / TO_TEST_RUNTIME | 118 |
 | Static merchant-capacity fields | local Vanilla `common/building_types` | `local_merchant_capacity`, `merchant_capacity_from_building`; sparse additive `INJECT:<building>` delta unless another rule makes the building structural. `local_trades_per_burgher` is intentionally left unchanged. | CONFIRMED_STATIC / TO_TEST_RUNTIME | 118 |
-| Composed US-07 trade-building estate-power field | local Vanilla `common/building_types/trade_buildings.txt` | `local_burghers_estate_power x 0.5`; additive delta in `INJECT` or composed target value in a structural `REPLACE` | CONFIRMED_STATIC / TO_TEST_RUNTIME | 083 |
-| Composed US-08/US-05.3 building maintenance quantities | local Vanilla `common/building_types` | goods inside `category = building_maintenance` blocks multiplied by their configured ordinary or trade-building multiplier; complete `REPLACE:<building>` | CONFIRMED_STATIC / TO_TEST_RUNTIME | 153 |
+| Composed US-07 trade-building estate-power field | local Vanilla `common/building_types/trade_buildings.txt` | `local_burghers_estate_power x 0.5`; additive delta in `INJECT` or composed target value in an exact-path structural source | CONFIRMED_STATIC / TO_TEST_RUNTIME | 083 |
+| Composed US-08/US-05.3 building maintenance quantities | local Vanilla `common/building_types` | goods inside `category = building_maintenance` blocks multiplied by their configured ordinary or trade-building multiplier; complete exact-path source | CONFIRMED_STATIC / TO_TEST_RUNTIME | 153 |
 | Static RGO expansion price entries | local Vanilla `common/prices/00_hardcoded.txt` | selected `REPLACE:expand_rgo_*` entries for mining, farming, hunting, gathering, and forestry | CONFIRMED_STATIC / TO_TEST_RUNTIME | 119 |
 
 ## Probe implementation path
@@ -70,8 +69,9 @@ Feeds counters to: vanilla production read at step 4
 Probe solution:
 
 ```txt
-Generate CBP-prefixed files containing complete structural `REPLACE:<building>` objects and sparse additive `INJECT:<building>` objects.
-Increase each eligible `output =` value by configurable `X%`.
+Generate complete exact-path sources for mandatory non-additive changes and CBP-prefixed sparse `INJECT:<building>` objects for additive fields and production alternatives.
+Clone each eligible productive method as a `cbp_us09_*` alternative whose `output` is increased by configurable `X%`; retain the Vanilla method as an accepted competing option.
+Mirror each Vanilla advance `unlock_production_method` for the corresponding CBP alternative.
 Increase each eligible `local_merchant_capacity` and `merchant_capacity_from_building` value by `MODEU5_US09_TRADE_CAPACITY_BONUS_PERCENT` when configured, otherwise by the independent default `15%`. `local_trades_per_burgher` is intentionally not increased by US-09.
 Compose the overlapping US-07 `trade_buildings.txt` `local_burghers_estate_power` reduction as `value x 0.5`
 Compose US-08/US-05.3 building maintenance by multiplying every good quantity inside a `category = building_maintenance` method by `0.7`, except maintenance inside enclosing `trade_category` buildings which uses `0.5`
@@ -82,7 +82,7 @@ Override each targeted RGO expansion gold value by `gold x (1 / (1 + P))`, where
 Rationale:
 
 ```txt
-This path changes source output and trade-capacity-like static fields directly when the Economy package is loaded.
+This path adds improved production-method alternatives and changes trade-capacity-like static fields directly when the Economy package is loaded.
 Production, RGO expansion-price compensation, and trade-capacity compensation are independently configurable. Local tests can use, for example, production `+8%`, RGO price offset `8%`, and trade capacity `+15%` without coupling those policies.
 It also carries the approved US-07 marketplace estate-power reduction in the same composed building entry.
 It therefore scales correctly with downstream national or technological production modifiers.
@@ -94,21 +94,23 @@ Constraints:
 ```txt
 Do not edit installed vanilla files in place.
 Use vanilla files only as scaffolding input.
-Generated building outputs use CBP-prefixed filenames.
-Structural entries preserve the complete changed top-level object.
-Modifier-only entries contain only additive deltas calculated as target minus Vanilla.
-Each changed building is emitted once in exactly one mode.
+Generated additive/alternative building outputs use CBP-prefixed filenames.
+Structural outputs preserve the complete Vanilla source file.
+Modifier entries contain only additive deltas calculated as target minus Vanilla.
+Production entries contain only new `cbp_us09_*` method names and never redeclare a Vanilla method.
+Production alternatives inherit the timing of every explicit Vanilla advance unlock.
+A source may emit both an exact-path structural file and a non-overlapping injection file.
 Keep the compensation rate configurable in the generator, not hand-edited across overrides.
 ```
 
 ### Option matrix
 
-1. Preferred: compose all requested changes per building, emit complete
-   `REPLACE:<building>` objects for structural changes and sparse
-   `INJECT:<building>` deltas for modifier-only changes, plus selected
+1. Preferred: compose all requested changes per source, emit a complete
+   exact-path source for mandatory non-additive changes and sparse
+   `INJECT:<building>` deltas/prefixed production alternatives, plus selected
    `REPLACE:` price objects for the five `expand_rgo_*` entries.
 
-   Status: implemented as package-shipped, CBP-prefixed database-entry outputs.
+   Status: implemented as package-shipped hybrid outputs.
 
 2. Country-level additive-modifier path: read current `global_production_efficiency` and `global_<good>_production_modifier`, then increase them by `5%`.
 
@@ -164,12 +166,12 @@ Related US: US-00.3, stock-aware production pipeline
 - Follow `AGENTS.md` and `CLAUDE.md`.
 - Follow `docs/technical/MODULE_OPTION_MODEL.md`; do not load or retain these overrides when the Rebalance Economy package is absent.
 - Use the hybrid building contract in
-  `docs/technical/BUILDING_OVERRIDE_GENERATION.md`: structural changes require
-  complete `REPLACE` objects; proven additive modifier changes use sparse
-  `INJECT` deltas.
+  `docs/technical/BUILDING_OVERRIDE_GENERATION.md`: mandatory non-additive
+  changes require complete exact-path sources; additive fields and uniquely
+  prefixed production alternatives use sparse `INJECT` entries.
 - Do not edit files under the installed vanilla game directory; read them only as scaffolding input.
-- Do not generate exact-path full building files or redeclare unchanged
-  buildings.
+- Do not generate complete `REPLACE:<building>` objects for structural
+  mutations or prefix nested production-method containers.
 - Keep the compensation percentage configurable in one generation path; do not hand-edit hundreds of output values.
 - Do not switch to the additive-modifier options unless their read semantics are confirmed and documented in TECH-01.
 - Apply the compensation before monthly production is read.
@@ -185,7 +187,8 @@ Related US: US-00.3, stock-aware production pipeline
 
 ## Acceptance criteria
 
-- [ ] Generated package files increase every targeted `output =` value by the configured `X%`.
+- [ ] Generated package files add one uniquely prefixed alternative for every targeted productive method, preserving its Vanilla inputs/category and increasing its `output` by configured `X%`.
+- [ ] Every explicit Vanilla advance unlock for a targeted method also unlocks its CBP alternative; no advanced method becomes available early.
 - [ ] Generated package files increase every targeted `local_merchant_capacity` and `merchant_capacity_from_building` value by the configured trade-capacity percent, falling back to the independent default `15%` when no value is configured, while leaving `local_trades_per_burgher` unchanged.
 - [ ] Generated `trade_buildings.txt` composes the approved US-07 `local_burghers_estate_power x 0.5` reduction without changing `local_merchant_power`.
 - [ ] Generated package files apply the configured ordinary or trade-building
@@ -215,18 +218,17 @@ The additive-modifier alternatives remain visible but unselected
 
 ## Known limitations
 
-The current implementation ships CBP-prefixed database-entry outputs in the
-Economy package. Structural building changes use complete `REPLACE` objects;
-modifier-only changes use sparse additive `INJECT` objects.
-The generated building candidate surface includes only changed buildings using
-approved US-07, US-08, US-09, or US-177 fields.
+The current implementation ships exact-path structural sources and
+CBP-prefixed additive `INJECT` outputs in the Economy package. Exact-path
+sources necessarily retain unchanged buildings from that Vanilla source.
 The US-07 composition is intentionally limited to `trade_buildings.txt`
 `local_burghers_estate_power`; `local_merchant_power` remains Vanilla until a
 concrete US-07 target value is approved.
 The US-08/US-05.3 maintenance composition is intentionally limited to goods
 inside explicit `category = building_maintenance` blocks.
-Earlier exact-path building copies remain forbidden. Selected database entries
-such as RGO prices use explicit `REPLACE:` declarations in CBP-prefixed files.
+Selected flat database entries such as RGO prices still use explicit
+`REPLACE:` declarations in CBP-prefixed files; that does not establish the
+same semantics for nested building production-method registries.
 The exact `global_production_efficiency` modifier, country modifier effect, and `monthly_country_pulse` exposure are documented for a possible runtime additive path, but that path remains unselected until read/runtime stacking semantics are confirmed and explicitly approved.
 
 # Edit : Additional RGO size fixe

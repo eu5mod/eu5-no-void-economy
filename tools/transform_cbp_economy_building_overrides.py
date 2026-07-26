@@ -307,6 +307,7 @@ def transform_lines_with_plan(
     minting_income_multiplier: float,
     goods: set[str],
     political_modifier_multiplier: float = 0.75,
+    comment_stockpile_capacity: bool = True,
 ) -> tuple[list[str], list[BuildingChange], int]:
     buildings = top_level_buildings(lines)
     maintenance_ranges = find_maintenance_blocks(lines)
@@ -329,9 +330,16 @@ def transform_lines_with_plan(
         value = float(match.group(3))
         new_value: float | None = None
 
-        if key == STOCKPILE_CAPACITY_FIELD:
+        if key == STOCKPILE_CAPACITY_FIELD and comment_stockpile_capacity:
             indentation = line[: len(line) - len(line.lstrip())]
-            new_line = f"{indentation}# {STOCKPILE_CAPACITY_FIELD} = {match.group(3)}{match.group(4)}"
+            existing_comment = match.group(4).strip().lstrip("# ").strip()
+            trace = f"# VANILLA = {match.group(3)}; CBP = disabled"
+            if existing_comment:
+                trace += f"; {existing_comment}"
+            new_line = (
+                f"{indentation}# {STOCKPILE_CAPACITY_FIELD} = "
+                f"{match.group(3)} {trace}"
+            )
             transformed.append(
                 new_line
             )
@@ -377,19 +385,23 @@ def transform_lines_with_plan(
                     file=sys.stderr,
                 )
 
-        if key in US09_OUTPUT_FIELDS:
+        if key in US09_OUTPUT_FIELDS and output_multiplier != 1:
             new_value = value * output_multiplier
 
-        if key in US09_TRADE_CAPACITY_FIELDS:
+        if key in US09_TRADE_CAPACITY_FIELDS and trade_capacity_multiplier != 1:
             new_value = value * trade_capacity_multiplier
 
-        if source_basename == "trade_buildings.txt" and key == "local_burghers_estate_power":
+        if (
+            source_basename == "trade_buildings.txt"
+            and key == "local_burghers_estate_power"
+            and us07_trade_burghers_estate_power_multiplier != 1
+        ):
             new_value = value * us07_trade_burghers_estate_power_multiplier
 
-        if key == MINTING_INCOME_FIELD:
+        if key == MINTING_INCOME_FIELD and minting_income_multiplier != 1:
             new_value = value * minting_income_multiplier
 
-        if key in POLITICAL_MONTHLY_FIELDS:
+        if key in POLITICAL_MONTHLY_FIELDS and political_modifier_multiplier != 1:
             new_value = value * political_modifier_multiplier
 
         rendered_value = match.group(3) if new_value is None else format_decimal(new_value)
@@ -444,6 +456,7 @@ def transform_lines(
     minting_income_multiplier: float,
     goods: set[str],
     political_modifier_multiplier: float = 0.75,
+    comment_stockpile_capacity: bool = True,
 ) -> list[str]:
     transformed, _, _ = transform_lines_with_plan(
         lines,
@@ -458,6 +471,7 @@ def transform_lines(
         minting_income_multiplier=minting_income_multiplier,
         goods=goods,
         political_modifier_multiplier=political_modifier_multiplier,
+        comment_stockpile_capacity=comment_stockpile_capacity,
     )
     return transformed
 
