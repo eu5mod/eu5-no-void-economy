@@ -315,6 +315,18 @@ preserving the current logs is intentional, or `--skip-idempotence` for a
 faster explicitly non-canonical iteration. The script does not launch EU5 or
 modify Git state.
 
+The console protocol identifies every operation as a step and substep (`1.1`,
+`3.7`, and so on). Substeps have explicit `START` and `END` boundaries with a
+status symbol; major steps use hash banners and a distinct status closure.
+Generation families use numbered start/end boundaries, and CBG runs inside a
+family receive a third-level identifier such as `1.5.1`. Successful validators
+stay compact; warnings remain visible; failures replay their complete captured
+diagnostics. The final two-level summary lists every step and substep,
+including warning counts, failures, and intentional skips. Reproducible JSON
+spec/manifest chatter and local absolute paths are hidden from the canonical
+view while CBG business rules, mutation counts, and edited surfaces remain
+visible.
+
 Local preparation reports trailing whitespace and indentation-only Git
 findings as warnings so they cannot prevent a valid package from being
 installed for runtime testing. Structural patch errors, including unresolved

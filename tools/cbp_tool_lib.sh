@@ -33,17 +33,49 @@ cbp_console_styled() {
 }
 
 cbp_console_major_separator() {
-	cbp_console_styled '1;35' '━━━━━━━━━━━━━━━━━━━━━━━━━━' "${1:-1}"
+	cbp_console_styled '1;35' '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' "${1:-1}"
 	printf '\n'
-
 }
 
 cbp_console_step_separator() {
 	cbp_console_styled '1;36' '#########################################################################' "${1:-1}"
 	printf '\n'
-	cbp_console_styled '1;36' '#########################################################################' "${1:-1}"
+}
+
+cbp_console_step_banner() {
+	local text="$1"
+	local fd="${2:-1}"
+	local width=73
+	local padding
+	local left_padding
+	local right_padding
+	local hashes
+	local left_hashes
+	local right_hashes
+
+	if ((${#text} + 2 >= width)); then
+		cbp_console_step_separator "$fd"
+		cbp_console_styled '1;36' "$text" "$fd"
+		printf '\n'
+		cbp_console_step_separator "$fd"
+		return
+	fi
+
+	padding=$((width - ${#text} - 2))
+	left_padding=$((padding / 2))
+	right_padding=$((padding - left_padding))
+	printf -v hashes '%*s' "$width" ''
+	printf -v left_hashes '%*s' "$left_padding" ''
+	printf -v right_hashes '%*s' "$right_padding" ''
+	hashes="${hashes// /#}"
+	left_hashes="${left_hashes// /#}"
+	right_hashes="${right_hashes// /#}"
+
+	cbp_console_styled '1;36' "$hashes" "$fd"
 	printf '\n'
-	cbp_console_styled '1;36' '#########################################################################' "${1:-1}"
+	cbp_console_styled '1;36' "${left_hashes} ${text} ${right_hashes}" "$fd"
+	printf '\n'
+	cbp_console_styled '1;36' "$hashes" "$fd"
 	printf '\n'
 }
 
@@ -61,6 +93,191 @@ cbp_console_warning() {
 	printf ' ' >&2
 	cbp_console_styled '1;33' "$message" 2 >&2
 	printf '\n' >&2
+}
+
+cbp_console_status_badge() {
+	local status="$1"
+	local fd="${2:-1}"
+	case "$status" in
+		OK) cbp_console_styled '1;32' '[OK]' "$fd" ;;
+		WARNING) cbp_console_styled '1;33' '[WARNING]' "$fd" ;;
+		FAILED) cbp_console_styled '1;31' '[FAILED]' "$fd" ;;
+		SKIPPED) cbp_console_styled '1;36' '[SKIPPED]' "$fd" ;;
+		*) cbp_console_styled '1;37' "[$status]" "$fd" ;;
+	esac
+}
+
+cbp_console_section_start() {
+	local id="$1"
+	local title="$2"
+	printf '\n'
+	cbp_console_step_banner "STEP $id  $title"
+}
+
+cbp_console_section_end() {
+	local id="$1"
+	local status="$2"
+	local title="$3"
+	local fd=1
+	[[ "$status" == "FAILED" ]] && fd=2
+
+	cbp_console_styled '1;36' "└─ [STEP $id]" "$fd"
+	printf ' '
+	cbp_console_status_badge "$status" "$fd"
+	printf ' %s\n' "$title"
+}
+
+cbp_console_task_start() {
+	local id="$1"
+	local title="$2"
+	local leading_blank="${3:-yes}"
+	[[ "$leading_blank" == "yes" ]] && printf '\n'
+	cbp_console_styled '1;36' "┌─ [$id] START" 1
+	printf ' '
+	cbp_console_styled '1' "$title" 1
+	printf '\n'
+}
+
+cbp_console_status_symbol() {
+	local status="$1"
+	local fd="${2:-1}"
+	case "$status" in
+		OK) cbp_console_styled '1;32' '✅' "$fd" ;;
+		WARNING) cbp_console_styled '1;33' '⚠️' "$fd" ;;
+		FAILED) cbp_console_styled '1;31' '❌' "$fd" ;;
+		SKIPPED) cbp_console_styled '1;36' '⏭' "$fd" ;;
+		*) cbp_console_styled '1;37' "$status" "$fd" ;;
+	esac
+}
+
+cbp_console_task_end() {
+	local id="$1"
+	local status="$2"
+	local title="$3"
+	local detail="${4:-}"
+	local fd=1
+	[[ "$status" == "FAILED" ]] && fd=2
+
+	cbp_console_styled '1;36' "└─ [$id]" "$fd"
+	printf ' END '
+	cbp_console_status_symbol "$status" "$fd"
+	printf ' %s' "$title"
+	if [[ -n "$detail" ]]; then
+		printf '  (%s)' "$detail"
+	fi
+	printf '\n'
+}
+
+cbp_console_status_record() {
+	local id="$1"
+	local status="$2"
+	local title="$3"
+	local detail="${4:-}"
+	local status_file="${CBP_CONSOLE_STATUS_FILE:-}"
+	[[ -z "$status_file" ]] && return 0
+
+	title="${title//$'\t'/ }"
+	title="${title//$'\n'/ }"
+	detail="${detail//$'\t'/ }"
+	detail="${detail//$'\n'/ }"
+	printf '%s\t%s\t%s\t%s\n' "$id" "$status" "$title" "$detail" >> "$status_file"
+}
+
+cbp_console_filter_stream() {
+	local mode="${1:-compact}"
+	case "$mode" in
+		full)
+			cat
+			;;
+		quiet)
+			awk '
+				/\[WARNING\]|\[⚠️\]|^WARNING:|^Warning:|^warning:/ {
+					print
+					fflush()
+				}
+			'
+			;;
+		compact)
+			awk '
+				/^Generated .*\.json (with|from)/ { next }
+				/^Generated \.\// { next }
+				/^Reconciled .*\.json with [0-9]+ owned output/ { next }
+				/^Manifest: .*\.json$/ { next }
+				/^Output: \.\// { next }
+				/^Output directory: \// { next }
+				/^PURGE[[:space:]]+\// { next }
+				/^[[:space:]]+source_path=\// { next }
+				/^[[:space:]]+\/.*$/ { next }
+				{
+					if ($0 == "") {
+						if (!blank) {
+							print
+							fflush()
+						}
+						blank = 1
+					} else {
+						print
+						fflush()
+						blank = 0
+					}
+				}
+			'
+			;;
+		*)
+			printf 'Unknown console output mode: %s\n' "$mode" >&2
+			return 2
+			;;
+	esac
+}
+
+cbp_console_run_task() {
+	local id="$1"
+	local title="$2"
+	local output_mode="$3"
+	shift 3
+
+	local log_file
+	local started_at
+	local finished_at
+	local elapsed
+	local command_status
+	local warning_count
+	local -a pipeline_status
+
+	log_file="$(mktemp "${TMPDIR:-/tmp}/cbp-console-task.XXXXXX")"
+	started_at="$(date +%s)"
+	cbp_console_task_start "$id" "$title"
+
+	set +e
+	"$@" 2>&1 | tee "$log_file" | cbp_console_filter_stream "$output_mode"
+	pipeline_status=("${PIPESTATUS[@]}")
+	set -e
+	command_status="${pipeline_status[0]}"
+
+	finished_at="$(date +%s)"
+	elapsed=$((finished_at - started_at))
+	warning_count="$(
+		grep -Eic '\[WARNING\]|\[⚠️\]|^WARNING:|^Warning:|^warning:' "$log_file" ||
+			true
+	)"
+
+	if ((command_status != 0)); then
+		cbp_console_task_end "$id" FAILED "$title" "exit $command_status; ${elapsed}s"
+		cbp_console_status_record "$id" FAILED "$title" "exit $command_status"
+		printf '\nFull diagnostic output for %s:\n' "$id" >&2
+		cat "$log_file" >&2
+		rm -f "$log_file"
+		return "$command_status"
+	fi
+
+	if ((warning_count > 0)); then
+		cbp_console_task_end "$id" WARNING "$title" "$warning_count warning(s); ${elapsed}s"
+		cbp_console_status_record "$id" WARNING "$title" "$warning_count warning(s)"
+	else
+		cbp_console_task_end "$id" OK "$title" "${elapsed}s"
+		cbp_console_status_record "$id" OK "$title"
+	fi
+	rm -f "$log_file"
 }
 
 cbp_check_patch_hygiene() {

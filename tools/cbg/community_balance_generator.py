@@ -120,12 +120,17 @@ def print_generation_summary(
 
     enabled = color_enabled()
     title = styled("CBG generation complete", "1;32", enabled)
-    cue_text = "[✅]" if (sys.stdout.encoding or "").lower().startswith("utf") else "[OK]"
-    cue = styled(cue_text, "1;32", enabled)
+    summary_id = os.environ.get("CBP_CBG_SUMMARY_ID", "").strip()
     label = lambda value: styled(f"{value:<20}", "1;36", enabled)
     print()
-    print(styled("━" * 72, "1;35", enabled))
-    print(f"{cue} {title}")
+    if summary_id:
+        nested_id = styled(summary_id, "1;36", enabled)
+        print(f"{nested_id} {title}")
+    else:
+        cue_text = "[✅]" if (sys.stdout.encoding or "").lower().startswith("utf") else "[OK]"
+        cue = styled(cue_text, "1;32", enabled)
+        print(styled("━" * 72, "1;35", enabled))
+        print(f"{cue} {title}")
     rule_label = styled("Business rule", "4;36", enabled)
     if len(business_rules) == 1:
         print(f"  {rule_label}: {business_rules[0]}")
