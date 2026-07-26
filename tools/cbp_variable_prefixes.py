@@ -23,7 +23,7 @@ import subprocess
 import sys
 from collections import defaultdict
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_PATH = ROOT / "docs/technical/CBP_VARIABLE_PREFIX_MIGRATION.md"
@@ -158,8 +158,50 @@ def write_text(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8")
 
 
+def cbg_manifest_owned_outputs() -> set[Path]:
+    """Return Vanilla-derived outputs owned by tracked CBG manifests."""
+    outputs: set[Path] = set()
+    packages_root = ROOT / "packages"
+    if not packages_root.is_dir():
+        return outputs
+
+    for manifest in packages_root.glob("*/cbp_generated/cbg_*_manifest.json"):
+        package_root = manifest.parent.parent.resolve()
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+        for entry in payload.get("files", []):
+            raw = entry.get("path")
+            if not isinstance(raw, str):
+                continue
+            relative = PurePosixPath(raw)
+            if raw.startswith("/") or ".." in relative.parts:
+                raise RuntimeError(
+                    f"unsafe CBG manifest output path in {manifest}: {raw!r}"
+                )
+            output = (package_root / Path(relative)).resolve()
+            if not output.is_relative_to(package_root):
+                raise RuntimeError(
+                    f"CBG manifest output escapes package root in {manifest}: {raw!r}"
+                )
+            outputs.add(output)
+    return outputs
+
+
+def is_vanilla_derived_economy_output(path: Path) -> bool:
+    try:
+        relative = path.relative_to(ROOT)
+    except ValueError:
+        return False
+    return (
+        len(relative.parts) >= 3
+        and relative.parts[:2] == ("packages", "cbp_economy_rebalance")
+        and path.suffix.lower() == ".txt"
+        and not path.name.startswith("cbp_")
+    )
+
+
 def iter_eu5_files() -> list[Path]:
     files: list[Path] = []
+    generated_outputs = cbg_manifest_owned_outputs()
     for root in EU5_ROOTS:
         if not root.exists():
             continue
@@ -168,6 +210,8 @@ def iter_eu5_files() -> list[Path]:
             if path.is_file()
             and path.suffix.lower() in EU5_SUFFIXES
             and "cbp_generated" not in path.relative_to(ROOT).parts
+            and path.resolve() not in generated_outputs
+            and not is_vanilla_derived_economy_output(path)
         )
     return sorted(set(files))
 

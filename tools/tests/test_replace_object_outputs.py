@@ -275,13 +275,13 @@ class ReplaceObjectOutputTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("must start with 'cbp_'", result.stderr)
 
-    def test_explicit_inject_output_must_be_cbp_inject_prefixed(self):
+    def test_explicit_inject_output_accepts_cbp_prefixed_filename(self):
         relative = "in_game/common/building_types/market.txt"
         self.write_source(relative, "marketplace = {\n\tvalue = 1\n}\n")
-        result = self.run_generator(
+        self.run_generator(
             {
                 "schema_version": 1,
-                "mod_id": "test-invalid-inject-output",
+                "mod_id": "test-explicit-inject-output",
                 "transformations": [
                     {
                         "file": relative,
@@ -295,11 +295,39 @@ class ReplaceObjectOutputTests(unittest.TestCase):
                         "render_mode": "inject_objects",
                     }
                 ],
+            }
+        )
+
+        destination = (
+            self.output / "in_game/common/building_types/cbp_market_patch.txt"
+        )
+        self.assertIn("INJECT:marketplace", destination.read_text(encoding="utf-8"))
+
+    def test_explicit_inject_output_must_be_cbp_prefixed(self):
+        relative = "in_game/common/building_types/market.txt"
+        self.write_source(relative, "marketplace = {\n\tvalue = 1\n}\n")
+        result = self.run_generator(
+            {
+                "schema_version": 1,
+                "mod_id": "test-invalid-inject-output",
+                "transformations": [
+                    {
+                        "file": relative,
+                        "output_file": (
+                            "in_game/common/building_types/market_patch.txt"
+                        ),
+                        "object": "marketplace",
+                        "field": "value",
+                        "operation": "replace",
+                        "value": 2,
+                        "render_mode": "inject_objects",
+                    }
+                ],
             },
             check=False,
         )
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("must start with 'cbp_inject_'", result.stderr)
+        self.assertIn("must start with 'cbp_'", result.stderr)
 
     def test_rejects_non_common_database(self):
         relative = "in_game/events/test.txt"
