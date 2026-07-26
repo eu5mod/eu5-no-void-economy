@@ -14,7 +14,7 @@ BOOTSTRAP = ROOT / "tools/cbg/adapters/cbp/helpers/bootstrap_cbg_manifest_from_g
 LOCATION_OUTPUT = "main_menu/common/static_modifiers/cbp_location.txt"
 BUILDING_OUTPUT = (
     "packages/cbp_economy_rebalance/in_game/common/building_types/"
-    "cbp_production_saltpeter.txt"
+    "production_saltpeter.txt"
 )
 RGO_PRICE_OUTPUT = (
     "packages/cbp_economy_rebalance/in_game/common/prices/"

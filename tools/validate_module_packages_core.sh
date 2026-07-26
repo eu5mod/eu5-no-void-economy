@@ -464,10 +464,9 @@ require_match 'every_market_center_in_country = \{' \
 require_match '^[[:space:]]*STATIC_MODIFIER_cbp_us09_base_rgo_size_10_percent_bonus:0 "\(CBP\) 10% Bigger RGO"$' \
 	packages/cbp_economy_rebalance/main_menu/localization/english/cbp_us09_rgo_l_english.yml \
 	'US-09 base RGO size static modifier localization must include the engine-displayed STATIC_MODIFIER key'
-if [[ -e packages/cbp_economy_rebalance/in_game/common/auto_modifiers/cbp_building_upkeep_auto_modifiers.txt ]]; then
-	printf '%s\n' 'CBP must not ship the obsolete building_upkeep_costs auto modifier; EU5 1.3 rejects that modifier type.' >&2
-	exit 1
-fi
+require_match '^[[:space:]]*building_upkeep_costs = -1\.0$' \
+	packages/cbp_economy_rebalance/in_game/common/auto_modifiers/cbp_building_upkeep_auto_modifiers.txt \
+	'CBP building upkeep auto modifier must retain the -1.0 fail-closed Crown upkeep guard'
 require_match '^[[:space:]]*BUILDING_UPKEEP_FACTOR = 0[[:space:]]+' \
 	loading_screen/common/defines/cbp_rebase_scaling_cost.txt \
 	'CBP zero Crown building upkeep must use the supported BUILDING_UPKEEP_FACTOR define'
