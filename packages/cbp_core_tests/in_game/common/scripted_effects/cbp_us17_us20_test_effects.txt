@@ -108,6 +108,7 @@ cbp_us17_us20_restore_original_cmm_trade_rework_setting = {
 }
 
 cbp_us17_us20_seed_reconciliation_fixture = {
+	save_temporary_scope_as = test_cbp_us20_market_classification_override
 	c:FRA = {
 		save_temporary_scope_as = cbp_trade_owner_controller_country
 		save_temporary_scope_as = cbp_trade_owner_country
@@ -248,19 +249,20 @@ cbp_debug_run_us17_us20_reconciliation_tests = {
 			save_temporary_scope_value_as = { name = test_cbp_us17_us20_loss_removed_quantity value = scope:cbp_actual_removed_quantity }
 			cbp_us17_us20_log_fixture_values = yes
 
-			# Cleanup the stock injected by this fixture after the US-20 loss has been removed.
+			# C = (1 - 0.70) * 0.05 = 0.015, so 0.985 remains from the injected unit.
+			# Cleanup exactly that remainder after the US-20 loss has been removed.
 			cbp_remove_stock = {
 				country = c:FRA
 				market = c:FRA.capital.market
 				good = wheat
-				quantity = 0.97
+				quantity = 0.985
 				reason = debug_test
 				only_remove_at_country_level = yes
 			}
 			c:FRA.capital.market = {
 				add_goods_supply = {
 					goods = goods:wheat
-					amount = -0.97
+					amount = -0.985
 				}
 			}
 
@@ -269,9 +271,9 @@ cbp_debug_run_us17_us20_reconciliation_tests = {
 			if = { limit = { OR = { scope:gui_cbp_trade_efficiency_old_price_side_bonus < 34.99 scope:gui_cbp_trade_efficiency_old_price_side_bonus > 35.01 } } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=old_price_side_bonus expected=35 category=hard_failure" }
 			if = { limit = { OR = { scope:gui_cbp_buying_selling_efficiency_clamped < 0.29 scope:gui_cbp_buying_selling_efficiency_clamped > 0.31 } } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=capped_combined_efficiency expected=0.30 category=hard_failure" }
 			if = { limit = { OR = { scope:gui_cbp_trade_efficiency_route_money_delta < -34.71 scope:gui_cbp_trade_efficiency_route_money_delta > -34.69 } } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=money_delta expected=-34.70 category=hard_failure" }
-			if = { limit = { OR = { scope:gui_cbp_us20_target_goods_amount_received < 99.96 scope:gui_cbp_us20_target_goods_amount_received > 99.98 } } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_target expected=99.97 category=hard_failure" }
-			if = { limit = { OR = { scope:gui_cbp_us20_goods_reconciliation_delta < -0.04 scope:gui_cbp_us20_goods_reconciliation_delta > -0.02 } } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_delta expected=-0.03 category=hard_failure" }
-			if = { limit = { OR = { scope:test_cbp_us17_us20_loss_removed_quantity < 0.02 scope:test_cbp_us17_us20_loss_removed_quantity > 0.04 } } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_loss_removed_by_remove_stock expected=0.03 category=hard_failure" }
+			if = { limit = { OR = { scope:gui_cbp_us20_target_goods_amount_received < 99.984 scope:gui_cbp_us20_target_goods_amount_received > 99.986 } } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_target expected=99.985 category=hard_failure" }
+			if = { limit = { OR = { scope:gui_cbp_us20_goods_reconciliation_delta < -0.016 scope:gui_cbp_us20_goods_reconciliation_delta > -0.014 } } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_delta expected=-0.015 category=hard_failure" }
+			if = { limit = { OR = { scope:test_cbp_us17_us20_loss_removed_quantity < 0.014 scope:test_cbp_us17_us20_loss_removed_quantity > 0.016 } } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=goods_loss_removed_by_remove_stock expected=0.015 category=hard_failure" }
 			if = { limit = { has_global_variable = cbp_trade_efficiency_money_delta_blocked_routes global_var:cbp_trade_efficiency_money_delta_blocked_routes > 0 } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=formula_path_should_not_emit_money_blocked_routes category=hard_failure" }
 			if = { limit = { OR = { NOT = { has_global_variable = cbp_trade_efficiency_treasury_application_routes } NOT = { global_var:cbp_trade_efficiency_treasury_application_routes = 1 } } } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=treasury_application_route_expected=1 category=hard_failure" }
 			if = { limit = { has_global_variable = cbp_trade_efficiency_treasury_application_blocked_routes global_var:cbp_trade_efficiency_treasury_application_blocked_routes > 0 } cbp_us17_us20_note_assertion_failure = yes error_log = "ModeU5 US17/US20 ASSERT FAIL assertion=treasury_application_should_not_be_blocked category=hard_failure" }

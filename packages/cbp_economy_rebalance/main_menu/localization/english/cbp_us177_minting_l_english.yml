@@ -1,0 +1,3 @@
+l_english:
+ AUTO_MODIFIER_NAME_cbp_us177_double_minting_base: "(CBP) Minting Base Rebalance"
+ AUTO_MODIFIER_DESC_cbp_us177_double_minting_base: "Provides the base component used by CBP's minting-income rebalance."

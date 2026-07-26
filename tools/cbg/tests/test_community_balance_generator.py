@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path, PurePosixPath
+from unittest.mock import patch
 
 from tools.cbg.community_balance_generator import (
     Intent,
@@ -55,6 +56,28 @@ class CommunityBalanceGeneratorTests(unittest.TestCase):
         self.assertRegex(text, r"Buildings\s+1 file\s+3 mutations")
         self.assertRegex(text, r"Laws\s+1 file\s+1 mutation")
         self.assertNotIn("\033[", text)
+
+    def test_console_summary_uses_parent_context_without_standalone_banner(self):
+        manifest = {
+            "files": [
+                {"path": "in_game/common/building_types/test.txt", "transformations": [{}]},
+            ]
+        }
+        output = io.StringIO()
+
+        with patch.dict("os.environ", {"CBP_CBG_SUMMARY_ID": "1.5.1"}):
+            with redirect_stdout(output):
+                print_generation_summary(
+                    manifest,
+                    1,
+                    Path("build/cbg_manifest.json"),
+                    ["Apply the configured building policy."],
+                )
+
+        text = output.getvalue()
+        self.assertIn("1.5.1 CBG generation complete", text)
+        self.assertNotIn("[✅]", text)
+        self.assertNotIn("━" * 72, text)
 
     def test_display_path_uses_repository_relative_path(self):
         manifest = Path(__file__).resolve().parents[3] / "build/cbg_manifest.json"

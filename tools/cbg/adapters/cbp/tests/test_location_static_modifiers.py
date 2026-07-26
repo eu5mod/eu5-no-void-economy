@@ -99,7 +99,8 @@ class LocationStaticModifierParityTest(unittest.TestCase):
         source.parent.mkdir(parents=True, exist_ok=True)
         source.write_text(source_text, encoding="utf-8")
 
-        reference = root / "reference" / "cbp_location.txt"
+        reference = root / "reference" / OUTPUT
+        reference.parent.mkdir(parents=True, exist_ok=True)
         legacy = subprocess.run(
             [
                 "bash",
@@ -136,7 +137,7 @@ class LocationStaticModifierParityTest(unittest.TestCase):
         subprocess.run(
             [
                 sys.executable,
-                "tools/cbg/community_balance_generator.py",
+                "tools/cbg/cbp_community_balance_generator.py",
                 "--game-root",
                 str(game_root),
                 "--spec",
@@ -186,7 +187,7 @@ class LocationStaticModifierParityTest(unittest.TestCase):
             self.assertEqual(legacy_stderr, "")
             self.assertEqual(spec_stderr, "")
 
-            development = output[output.index("development = {") :]
+            development = output[output.index("REPLACE:development = {") :]
             self.assertIn(
                 "# maximum_stockpile_capacity = 5 # CBG: commented by cbp-location-static-modifiers",
                 development,
@@ -248,13 +249,13 @@ class LocationStaticModifierParityTest(unittest.TestCase):
                 if rule.get("object") == "development"
             ]
             self.assertEqual(development_rules, [])
-            self.assertNotIn("development = {", output)
+            self.assertNotIn("REPLACE:development = {", output)
             for warning in (legacy_stderr, spec_stderr):
                 self.assertIn("[⚠️] Vanilla development static modifier", warning)
                 self.assertIn(source.resolve().as_uri(), warning)
             self.assertIn("maximum_stockpile_capacity = 0 # VANILLA VALUE IS 25", output)
 
-    def test_unchanged_replacement_objects_are_not_copied(self):
+    def test_unchanged_objects_are_omitted_from_dedicated_output(self):
         with tempfile.TemporaryDirectory() as temporary:
             output, payload, legacy_stderr, spec_stderr, _ = self.run_generators(
                 Path(temporary),
@@ -275,8 +276,8 @@ class LocationStaticModifierParityTest(unittest.TestCase):
                 "market_center",
                 "surplus_jobs",
             ):
-                self.assertNotIn(f"{unchanged_object} = {{", output)
-            self.assertIn("development = {", output)
+                self.assertNotIn(f"REPLACE:{unchanged_object} = {{", output)
+            self.assertIn("REPLACE:development = {", output)
             self.assertIn("# maximum_stockpile_capacity = 5", output)
 
     def test_output_file_is_omitted_when_every_policy_is_a_noop(self):

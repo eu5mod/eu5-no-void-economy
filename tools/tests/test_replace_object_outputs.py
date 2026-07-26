@@ -109,7 +109,7 @@ class ReplaceObjectOutputTests(unittest.TestCase):
             ["marketplace"],
         )
 
-    def test_preserves_trailing_whitespace_on_selected_object_boundary(self):
+    def test_removes_trailing_whitespace_from_selected_objects(self):
         relative = "in_game/common/building_types/production_saltpeter.txt"
         self.write_source(
             relative,
@@ -141,8 +141,115 @@ class ReplaceObjectOutputTests(unittest.TestCase):
         )
         generated = destination.read_bytes()
         self.assertIn(b"REPLACE:saltpeter_guild = {", generated)
-        self.assertIn(b"\n}\t\n", generated)
+        self.assertNotIn(b"\n}\t\n", generated)
+        self.assertNotIn(b"\t\n", generated)
         self.assertNotIn(b"saltpeter_workshop", generated)
+
+    def test_emits_sparse_inject_object_in_separate_prefixed_file(self):
+        relative = "in_game/common/building_types/market.txt"
+        self.write_source(
+            relative,
+            "marketplace = {\n"
+            "\tmodifier = {\n"
+            "\t\tlocal_merchant_capacity = 1\n"
+            "\t}\n"
+            "}\n",
+        )
+        self.run_generator(
+            {
+                "schema_version": 1,
+                "mod_id": "test-inject-output",
+                "transformations": [
+                    {
+                        "file": relative,
+                        "object": "marketplace",
+                        "field": "__object__",
+                        "operation": "replace_object",
+                        "value": [
+                            "marketplace = {",
+                            "\tmodifier = {",
+                            "\t\tlocal_merchant_capacity = 0.15",
+                            "\t}",
+                            "}",
+                        ],
+                        "render_mode": "inject_objects",
+                        "header": ["# Generated injection."],
+                        "provenance": "preserve",
+                    }
+                ],
+            }
+        )
+
+        destination = (
+            self.output / "in_game/common/building_types/cbp_inject_market.txt"
+        )
+        content = destination.read_text(encoding="utf-8")
+        self.assertTrue(content.startswith("# Generated injection.\n\n"))
+        self.assertIn("INJECT:marketplace = {", content)
+        self.assertIn("local_merchant_capacity = 0.15", content)
+        self.assertNotIn("REPLACE:marketplace", content)
+
+        manifest = json.loads(self.manifest.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["files"][0]["database_entry_mode"], "INJECT")
+
+    def test_one_vanilla_source_can_emit_replace_and_inject_outputs(self):
+        relative = "in_game/common/building_types/market.txt"
+        self.write_source(
+            relative,
+            "warehouse = {\n\tavailability = yes\n}\n\n"
+            "marketplace = {\n\tmodifier = {\n"
+            "\t\tlocal_merchant_capacity = 1\n\t}\n}\n",
+        )
+        self.run_generator(
+            {
+                "schema_version": 1,
+                "mod_id": "test-hybrid-output",
+                "transformations": [
+                    {
+                        "file": relative,
+                        "object": "warehouse",
+                        "field": "availability",
+                        "operation": "replace",
+                        "value": "no",
+                        "render_mode": "replace_objects",
+                        "provenance": "preserve",
+                    },
+                    {
+                        "file": relative,
+                        "object": "marketplace",
+                        "field": "__object__",
+                        "operation": "replace_object",
+                        "value": [
+                            "marketplace = {",
+                            "\tmodifier = {",
+                            "\t\tlocal_merchant_capacity = 0.15",
+                            "\t}",
+                            "}",
+                        ],
+                        "render_mode": "inject_objects",
+                        "provenance": "preserve",
+                    },
+                ],
+            }
+        )
+
+        replace = self.output / "in_game/common/building_types/cbp_market.txt"
+        inject = (
+            self.output / "in_game/common/building_types/cbp_inject_market.txt"
+        )
+        self.assertIn("REPLACE:warehouse", replace.read_text(encoding="utf-8"))
+        self.assertIn("INJECT:marketplace", inject.read_text(encoding="utf-8"))
+        manifest = json.loads(self.manifest.read_text(encoding="utf-8"))
+        self.assertEqual(
+            {
+                entry["path"]: entry["database_entry_mode"]
+                for entry in manifest["files"]
+            },
+            {
+                "in_game/common/building_types/cbp_market.txt": "REPLACE",
+                "in_game/common/building_types/cbp_inject_market.txt": "INJECT",
+            },
+        )
 
     def test_explicit_output_must_be_cbp_prefixed(self):
         relative = "main_menu/common/static_modifiers/location.txt"
@@ -160,6 +267,60 @@ class ReplaceObjectOutputTests(unittest.TestCase):
                         "operation": "replace",
                         "value": 2,
                         "render_mode": "replace_objects",
+                    }
+                ],
+            },
+            check=False,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("must start with 'cbp_'", result.stderr)
+
+    def test_explicit_inject_output_accepts_cbp_prefixed_filename(self):
+        relative = "in_game/common/building_types/market.txt"
+        self.write_source(relative, "marketplace = {\n\tvalue = 1\n}\n")
+        self.run_generator(
+            {
+                "schema_version": 1,
+                "mod_id": "test-explicit-inject-output",
+                "transformations": [
+                    {
+                        "file": relative,
+                        "output_file": (
+                            "in_game/common/building_types/cbp_market_patch.txt"
+                        ),
+                        "object": "marketplace",
+                        "field": "value",
+                        "operation": "replace",
+                        "value": 2,
+                        "render_mode": "inject_objects",
+                    }
+                ],
+            }
+        )
+
+        destination = (
+            self.output / "in_game/common/building_types/cbp_market_patch.txt"
+        )
+        self.assertIn("INJECT:marketplace", destination.read_text(encoding="utf-8"))
+
+    def test_explicit_inject_output_must_be_cbp_prefixed(self):
+        relative = "in_game/common/building_types/market.txt"
+        self.write_source(relative, "marketplace = {\n\tvalue = 1\n}\n")
+        result = self.run_generator(
+            {
+                "schema_version": 1,
+                "mod_id": "test-invalid-inject-output",
+                "transformations": [
+                    {
+                        "file": relative,
+                        "output_file": (
+                            "in_game/common/building_types/market_patch.txt"
+                        ),
+                        "object": "marketplace",
+                        "field": "value",
+                        "operation": "replace",
+                        "value": 2,
+                        "render_mode": "inject_objects",
                     }
                 ],
             },

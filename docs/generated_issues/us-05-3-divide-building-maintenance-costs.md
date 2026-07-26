@@ -25,11 +25,13 @@ Activation: launcher/playset package selection
 Behavior when absent: vanilla building maintenance quantities remain unchanged
 ```
 
-The implementation is composed into the existing Economy exact-path building
-override generator because US-07, US-08/US-05.3, and US-09 can all touch the
-same vanilla `common/building_types/*.txt` files. One generated exact-path file
-per vanilla source file avoids competing static overrides and duplicate-key
-load noise.
+The implementation is composed into the Economy building-source generator
+because US-07, US-08/US-05.3, US-09, and US-177 can all touch the same Vanilla
+source. Maintenance changes are structural and therefore promote the complete
+Vanilla source file to exact-path ownership. A source with modifier-only changes
+may instead produce sparse additive injections. This avoids competing static
+overrides. Complete `REPLACE:<building>` objects were rejected after runtime
+reported duplicate production-method registrations for reused nested keys.
 
 ## Implementation rule
 
@@ -61,7 +63,13 @@ python3 tools/validate_us08_building_maintenance_overrides.py \
 
 The validator proves:
 
-- every vanilla maintenance source file has a generated exact-path override;
+- every structurally changed Vanilla maintenance source has a complete
+  exact-path output;
+- every maintenance-changed building is present once in that complete source;
+- modifier-only buildings may be emitted once as sparse `INJECT:<building>`
+  objects containing exact `target - Vanilla` deltas;
+- no CBP-prefixed structural building file exists;
+- no production-method container uses a nested `REPLACE:` or `INJECT:` prefix;
 - every non-trade maintenance-good quantity is exactly `source * 0.7`;
 - every trade-category maintenance-good quantity is exactly `source * 0.5`;
 - the generated body matches the shared transformer used by the generator.
@@ -80,5 +88,6 @@ python3 tools/validate_cmm_configuration.py
 git diff --check
 ```
 
-Runtime validation is limited to checking that the generated exact-path package
-overrides load without duplicate-key or unexpected-token errors in `error.log`.
+Runtime validation must confirm that the generated exact-path sources
+load without duplicate building keys, duplicated production-method names, or
+unexpected-token errors in `error.log`.

@@ -59,8 +59,6 @@ package_ids=(
 	"cbp_trade_rebalance"
 	"cbp_war_rebalance"
 	"cbp_core_tests"
-	"cbp_core_tests"
-	"cbp_core_tests"
 )
 
 package_sources=(
@@ -69,8 +67,13 @@ package_sources=(
 	"$repo_root/packages/cbp_trade_rebalance"
 	"$repo_root/packages/cbp_war_rebalance"
 	"$repo_root/packages/cbp_core_tests"
-	"$repo_root/packages/cbp_core_tests"
-	"$repo_root/packages/cbp_core_tests"
+)
+
+# Known deployment names owned by earlier versions of this repository. Keeping
+# one of these beside the package set can make EU5 load both the old monolith
+# and the current packages, producing duplicate database keys.
+legacy_package_ids=(
+	"eu5voideco"
 )
 
 # The root checkout is the future single gameplay mod. Mirror it by default so
@@ -96,6 +99,29 @@ if ! command -v rsync >/dev/null 2>&1; then
 	printf 'rsync is required to install or check the local package set.\n' >&2
 	exit 1
 fi
+
+validate_target_root() {
+	if [[ -z "$target_root" || "$target_root" == "/" ]]; then
+		printf 'Refusing unsafe install target: %s\n' "${target_root:-<empty>}" >&2
+		exit 1
+	fi
+
+	case "$target_root/" in
+		"$repo_root/"|"$repo_root/"*)
+			printf 'Refusing install target inside the source checkout: %s\n' "$target_root" >&2
+			exit 1
+			;;
+	esac
+}
+
+if [[ "$action" == "install" ]]; then
+	mkdir -p "$target_root"
+elif [[ ! -d "$target_root" ]]; then
+	printf 'Install target does not exist: %s\n' "$target_root" >&2
+	exit 1
+fi
+target_root="$(cd "$target_root" && pwd -P)"
+validate_target_root
 
 if [[ "$action" == "install" && "$run_generator" == "yes" ]]; then
 	"$generator"
@@ -160,7 +186,7 @@ reset_destination() {
 
 	package_name="$(basename "$destination")"
 	case "$package_name" in
-		cbp_core|cbp_economy_rebalance|cbp_trade_rebalance|cbp_war_rebalance|cbp_core_tests|cbp_core_tests|cbp_core_tests)
+		cbp_core|cbp_economy_rebalance|cbp_trade_rebalance|cbp_war_rebalance|cbp_core_tests|eu5voideco)
 			;;
 		*)
 			printf 'Refusing to remove unexpected install destination: %s\n' "$destination" >&2
@@ -172,6 +198,26 @@ reset_destination() {
 	# or deleted source files cannot survive in the deployment.
 	rm -rf -- "$destination"
 	mkdir -p "$destination"
+}
+
+prepare_clean_install() {
+	local package_id
+	local legacy_package_id
+
+	# Purge every managed destination before copying the first package. This
+	# prevents an interrupted install from mixing current files with files left
+	# by an older layout or filename.
+	for package_id in "${package_ids[@]}"; do
+		printf 'PURGE    %s\n' "$target_root/$package_id"
+		reset_destination "$target_root/$package_id"
+	done
+
+	for legacy_package_id in "${legacy_package_ids[@]}"; do
+		if [[ -e "$target_root/$legacy_package_id" || -L "$target_root/$legacy_package_id" ]]; then
+			printf 'PURGE    legacy deployment %s\n' "$target_root/$legacy_package_id"
+			rm -rf -- "$target_root/$legacy_package_id"
+		fi
+	done
 }
 
 rsync_core_payload() {
@@ -197,7 +243,6 @@ rsync_companion_payload() {
 install_core() {
 	local destination="$target_root/cbp_core"
 
-	reset_destination "$destination"
 	rsync_core_payload "$destination"
 	write_provenance "$destination"
 	normalize_eu5_text_encoding "$destination"
@@ -207,7 +252,6 @@ install_companion() {
 	local source="$1"
 	local destination="$2"
 
-	reset_destination "$destination"
 	rsync_companion_payload "$source" "$destination"
 	write_provenance "$destination"
 	normalize_eu5_text_encoding "$destination"
@@ -246,6 +290,7 @@ check_payload_mirror() {
 		return 1
 	fi
 
+	printf 'CLEAN    %s mirrors its source payload; no stale deployed files\n' "$package_id"
 	return 0
 }
 
@@ -328,10 +373,10 @@ if [[ "$action" == "check" ]]; then
 	exit $?
 fi
 
-mkdir -p "$target_root"
+prepare_clean_install
 install_core
 
-for index in 1 2 3 4 5 6; do
+for ((index = 1; index < ${#package_ids[@]}; index++)); do
 	install_companion \
 		"${package_sources[$index]}" \
 		"$target_root/${package_ids[$index]}"
@@ -339,8 +384,3 @@ done
 
 printf 'Installed the ModeU5 packages in:\n  %s\n\n' "$target_root"
 check_packages
-
-if [[ -e "$target_root/eu5voideco" ]]; then
-	printf '\nOlder single-package path detected: %s\n' "$target_root/eu5voideco"
-	printf 'If the launcher shows two "No Void Economy" entries, disable the one backed by eu5voideco.\n'
-fi

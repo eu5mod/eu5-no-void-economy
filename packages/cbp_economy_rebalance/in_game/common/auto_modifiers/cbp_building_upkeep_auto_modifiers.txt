@@ -1,7 +1,0 @@
-# BUILDING_UPKEEP_FACTOR is already set to 0 in the Core loading-screen
-# defines override. This auto modifier is a second fail-closed guard for UI and
-# runtime surfaces that read the country modifier stack directly.
-cbp_zero_crown_building_upkeep_base = {
-	requires_real = no
-	building_upkeep_costs = -1.0
-}
