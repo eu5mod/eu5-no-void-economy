@@ -19,7 +19,8 @@ work_dir="$(mktemp -d "${TMPDIR:-/tmp}/cbp-cbg-rgo.XXXXXX")"
 trap 'rm -rf "$work_dir"' EXIT
 mkdir -p "$work_dir/reference/in_game/common"
 
-target="in_game/common/prices/00_hardcoded.txt"
+source_target="in_game/common/prices/00_hardcoded.txt"
+output_target="in_game/common/prices/cbp_00_hardcoded.txt"
 
 # The retained offset adapter must remain byte-identical to the previous
 # US-09 materializer for the same configured percentage.
@@ -35,12 +36,28 @@ python3 tools/cbg/adapters/cbp/generate_cbp_cbg_rgo_prices_spec.py \
 	--percent "$rgo_price_percent" \
 	--fixed-price "$fixed_price" \
 	--output "$work_dir/offset.json"
-python3 tools/cbg/community_balance_generator.py \
+python3 tools/cbg/cbp_community_balance_generator.py \
 	--game-root "$game_root" --spec "$work_dir/offset.json" \
 	--output-root "$work_dir/offset-candidate" \
 	--manifest "$work_dir/offset-candidate/manifest.json"
-if ! cmp -s "$work_dir/reference/$target" "$work_dir/offset-candidate/$target"; then
-	diff -u "$work_dir/reference/$target" "$work_dir/offset-candidate/$target" || true
+python3 - "$work_dir/reference/$source_target" "$work_dir/offset-expected/$output_target" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+source = Path(sys.argv[1])
+target = Path(sys.argv[2])
+target.parent.mkdir(parents=True, exist_ok=True)
+text = source.read_text(encoding="utf-8-sig")
+text = re.sub(
+    r"(?m)^([A-Za-z0-9_]+[ \t]*=[ \t]*\{)",
+    r"REPLACE:\1",
+    text,
+)
+target.write_text(text, encoding="utf-8")
+PY
+if ! cmp -s "$work_dir/offset-expected/$output_target" "$work_dir/offset-candidate/$output_target"; then
+	diff -u "$work_dir/offset-expected/$output_target" "$work_dir/offset-candidate/$output_target" || true
 	exit 1
 fi
 
@@ -53,12 +70,12 @@ python3 tools/cbg/adapters/cbp/generate_cbp_cbg_rgo_prices_spec.py \
 	--percent "$rgo_price_percent" \
 	--fixed-price "$fixed_price" \
 	--output "$work_dir/fixed.json"
-python3 tools/cbg/community_balance_generator.py \
+python3 tools/cbg/cbp_community_balance_generator.py \
 	--game-root "$game_root" --spec "$work_dir/fixed.json" \
 	--output-root "$work_dir/fixed-candidate" \
 	--manifest "$work_dir/fixed-candidate/manifest.json"
 
-python3 - "$game_root/$target" "$work_dir/fixed-candidate/$target" "$fixed_price" <<'PY'
+python3 - "$game_root/$source_target" "$work_dir/fixed-candidate/$output_target" "$fixed_price" <<'PY'
 from __future__ import annotations
 
 import sys
@@ -76,7 +93,8 @@ fixed_price = Decimal(sys.argv[3])
 def values(path: Path) -> dict[str, Decimal]:
     if not path.is_file():
         return {}
-    lines = path.read_text(encoding="utf-8-sig").splitlines(keepends=True)
+    text = path.read_text(encoding="utf-8-sig").replace("REPLACE:", "")
+    lines = text.splitlines(keepends=True)
     objects = {obj.path: obj for obj in scan_objects(lines)}
     result: dict[str, Decimal] = {}
     for path_key, obj in objects.items():

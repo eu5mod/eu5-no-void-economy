@@ -104,7 +104,10 @@ def format_decimal(value: Decimal) -> str:
 
 
 def format_generated_decimal(value: Decimal) -> str:
-    rounded = value.quantize(Decimal("0.0000000001"), rounding=ROUND_HALF_UP)
+    # EU5's goods database accepts at most five fractional digits. Keeping the
+    # generator at the same precision as Vanilla avoids malformed fixed-point
+    # tokens for recurring fractions such as 3.5 / 3.
+    rounded = value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     return format_decimal(rounded)
 
 

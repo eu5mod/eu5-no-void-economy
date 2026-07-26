@@ -10,6 +10,7 @@ legacy main so all unrelated checks remain active.
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
 import validate_ci_static_contracts_legacy as legacy
 
@@ -290,6 +291,14 @@ def validate_us17_owner_modifier_contract(
     for modifier_name, variable_name, modifier_type in expected_auto_modifiers:
         modifier_block = block(native_auto_modifiers, modifier_name)
         expect(
+            f"has_variable = {variable_name}" in modifier_block,
+            f"{modifier_name} must guard its persisted correction in potential_trigger",
+        )
+        expect(
+            "exists = var:" not in modifier_block,
+            f"{modifier_name} must not use unsupported exists variable guards",
+        )
+        expect(
             re.search(
                 rf"scales_with\s*=\s*\{{[^{{}}]*value\s*=\s*var:{variable_name}[^{{}}]*\}}",
                 modifier_block,
@@ -310,6 +319,14 @@ def validate_us17_owner_modifier_contract(
     expect(
         native_auto_modifiers.count("requires_real = no") == 4,
         "US17 must expose exactly four auto-modifiers",
+    )
+    expect(
+        all(name not in owner_modifier_effects for name in CUSTOM_DEFINE_NAMES),
+        "US17/US20 runtime effects must not reference retired custom Define names",
+    )
+    expect(
+        "cbp_us17_us20_route_loss_coefficient_max" in owner_modifier_effects,
+        "US17/US20 runtime must use the named route-loss script value",
     )
 
     policy_hook = block(country_governance_on_actions, "on_policy_changed")
@@ -431,6 +448,14 @@ def validate_us17_us20_static_contract(
         owner_modifier_effects,
         "cbp_run_us17_operation_aware_route_profit_reconciliation",
     )
+    route_classification = block(
+        trade_reconciliation_effects,
+        "cbp_classify_us20_route_market_accounting_surfaces",
+    )
+    seeded_reconciliation_test = legacy.read(
+        "packages/cbp_core_tests/in_game/common/scripted_effects/"
+        "cbp_us17_us20_test_effects.txt"
+    )
     expect("add_gold" not in compatibility_money, "US17 compatibility hook must contain no treasury mutation")
     expect(
         "gui_cbp_trade_efficiency_route_money_delta value = 0" in compatibility_money,
@@ -444,6 +469,27 @@ def validate_us17_us20_static_contract(
         "cbp_compute_us20_route_loss_from_selling_efficiency" in owner_modifier_effects,
         "Production must retain compatibility-named US20 reader",
     )
+    test_override_marker = "test_cbp_us20_market_classification_override"
+    test_origin_value = "test_cbp_us20_test_origin_market_promoted"
+    test_target_value = "test_cbp_us20_test_target_market_promoted"
+    expect(
+        f"exists = scope:{test_override_marker}" in route_classification,
+        "US20 test-only market classification must require an explicit override marker",
+    )
+    expect(
+        route_classification.index(test_override_marker)
+        < route_classification.index(test_origin_value)
+        < route_classification.index(test_target_value),
+        "US20 test values must remain nested behind their explicit override marker",
+    )
+    for fixture, fixture_name in (
+        (seeded_reconciliation_test, "seeded route reconciliation"),
+        (us20_probe_effects, "US20 case matrix"),
+    ):
+        expect(
+            f"save_temporary_scope_as = {test_override_marker}" in fixture,
+            f"{fixture_name} fixture must opt in to test-only market classification",
+        )
 
     expect(live_hook_call not in q8_7_global_owner_effects, "US20 live hook must not be in market-local body")
     expect(live_hook_call not in stock_on_actions, "US20 live hook must not be directly in monthly on_actions")
@@ -475,6 +521,15 @@ def validate_us17_us20_static_contract(
         "change_global_variable = { name = cbp_us20_market_goods_supply_loss_routes add = 1 }"
         in trade_reconciliation_effects,
         "US20 market-loss counter must retain safe increment semantics",
+    )
+    expect(
+        "CBD_TRADE_MAINTENANCE_MAX_IMPACT" not in trade_reconciliation_effects,
+        "Historical trade reconciliation must not read the retired CBD custom Define",
+    )
+    expect(
+        "multiply = cbp_us17_us20_route_loss_coefficient_max"
+        in trade_reconciliation_effects,
+        "Historical trade reconciliation must use the named route-loss script value",
     )
 
     for token, message in [
@@ -524,7 +579,24 @@ legacy.validate_us17_owner_modifier_contract = validate_us17_owner_modifier_cont
 legacy.validate_us17_us20_static_contract = validate_us17_us20_static_contract
 
 
+def validate_generated_food_precision() -> None:
+    food_root = (
+        Path(__file__).resolve().parents[1]
+        / "packages/cbp_economy_rebalance/in_game/common/goods"
+    )
+    excessive_precision = re.compile(
+        r"(?m)^\s*food\s*=\s*-?(?:[0-9]+\.(?P<fraction>[0-9]{6,})|\.[0-9]{6,})\b"
+    )
+    for path in sorted(food_root.glob("*.txt")):
+        match = excessive_precision.search(path.read_text(encoding="utf-8-sig"))
+        legacy.expect(
+            match is None,
+            f"Generated food value exceeds EU5's five-decimal parser limit: {path}",
+        )
+
+
 def main() -> int:
+    validate_generated_food_precision()
     return legacy.main()
 
 

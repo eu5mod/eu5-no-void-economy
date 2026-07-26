@@ -11,32 +11,40 @@
 
 cbp_us17_selling_efficiency_cancellation = {
 	requires_real = no
-	potential_trigger = { cbp_trade_rework_enabled_trigger = yes }
-	limit = { has_variable = cbp_us17_native_selling_correction }
+	potential_trigger = {
+		cbp_trade_rework_enabled_trigger = yes
+		has_variable = cbp_us17_native_selling_correction
+	}
 	scales_with = { value = var:cbp_us17_native_selling_correction }
 	selling_efficiency = 1
 }
 
 cbp_us17_import_efficiency_cancellation = {
 	requires_real = no
-	potential_trigger = { cbp_trade_rework_enabled_trigger = yes }
-	limit = { has_variable = cbp_us17_native_import_correction }
+	potential_trigger = {
+		cbp_trade_rework_enabled_trigger = yes
+		has_variable = cbp_us17_native_import_correction
+	}
 	scales_with = { value = var:cbp_us17_native_import_correction }
 	import_efficiency = 1
 }
 
 cbp_us17_export_efficiency_cancellation = {
 	requires_real = no
-	potential_trigger = { cbp_trade_rework_enabled_trigger = yes }
-	limit = { has_variable = cbp_us17_native_export_correction }
+	potential_trigger = {
+		cbp_trade_rework_enabled_trigger = yes
+		has_variable = cbp_us17_native_export_correction
+	}
 	scales_with = { value = var:cbp_us17_native_export_correction }
 	export_efficiency = 1
 }
 
 cbp_us17_merchant_maintenance_reconciliation = {
 	requires_real = no
-	potential_trigger = { cbp_trade_rework_enabled_trigger = yes }
-	limit = { has_variable = cbp_us17_native_maintenance_correction }
+	potential_trigger = {
+		cbp_trade_rework_enabled_trigger = yes
+		has_variable = cbp_us17_native_maintenance_correction
+	}
 	scales_with = { value = var:cbp_us17_native_maintenance_correction }
 	merchant_maintenance_efficiency = 1
 }
