@@ -12,6 +12,7 @@ CORE04_FILE = ROOT / "in_game/common/scripted_effects/cbp_core04_market_entry_ef
 MONTHLY_MEMORY_FILE = ROOT / "in_game/common/scripted_effects/cbp_core04_monthly_memory_effects.txt"
 CORE03_ON_ACTION = ROOT / "in_game/common/on_action/cbp_core03_exposure_on_actions.txt"
 STOCK_ON_ACTION = ROOT / "in_game/common/on_action/cbp_stock_on_actions.txt"
+STOCK_EFFECTS_FILE = ROOT / "in_game/common/scripted_effects/cbp_stock_effects.txt"
 DOC_FILE = ROOT / "docs/technical/PERMANENT_CORE_CONTROL_FLOOR.md"
 
 EFFECT = "cbp_enforce_owner_core_control_floor"
@@ -58,6 +59,7 @@ def main() -> None:
     monthly_memory = read(MONTHLY_MEMORY_FILE)
     owner_on_action = read(CORE03_ON_ACTION)
     stock_on_action = read(STOCK_ON_ACTION)
+    stock_effects = read(STOCK_EFFECTS_FILE)
     documentation = read(DOC_FILE)
 
     require(floor.count(f"{EFFECT} = {{") == 1, "floor effect must have one definition")
@@ -103,10 +105,35 @@ def main() -> None:
             "monthly CORE-04 memory refresh must retain market-memory writes")
 
     global_refresh = extract_block(core04, "cbp_core04_refresh_all_location_market_memory")
-    require("every_country = {" in global_refresh,
+    global_ready_pos = global_refresh.find("cbp_stock_runtime_ready_trigger = yes")
+    global_country_pos = global_refresh.find("every_country = {")
+    require(global_ready_pos >= 0 and global_country_pos > global_ready_pos,
+            "global start/load refresh must run only after stock runtime readiness")
+    require(global_country_pos >= 0,
             "start/load refresh must retain its existing country traversal")
     require(f"{COMBINED_REFRESH} = yes" in global_refresh,
             "start/load refresh must reuse the combined location loop")
+
+    start_registration = extract_block(stock_on_action, "on_game_start")
+    require("cbp_start_game_stock_initialization_pulse" in start_registration,
+            "on_game_start must register the stock initialization pulse")
+    start_pulse = extract_block(stock_on_action, "cbp_start_game_stock_initialization_pulse")
+    start_dispatcher_pos = start_pulse.find("cbp_start_game_stock_initialization_dispatcher = yes")
+    start_refresh_pos = start_pulse.find("cbp_core04_refresh_all_location_market_memory = yes")
+    require(start_dispatcher_pos >= 0 and start_refresh_pos > start_dispatcher_pos,
+            "game-start pulse must refresh all Control floors after stock initialization")
+
+    load_registration = extract_block(stock_on_action, "on_game_load")
+    require("cbp_load_game_stock_initialization_pulse" in load_registration,
+            "on_game_load must register the stock lifecycle-repair pulse")
+    load_pulse = extract_block(stock_on_action, "cbp_load_game_stock_initialization_pulse")
+    require("cbp_repair_stock_lifecycle_on_game_load = yes" in load_pulse,
+            "game-load pulse must invoke stock lifecycle repair")
+    load_repair = extract_block(stock_effects, "cbp_repair_stock_lifecycle_on_game_load")
+    load_dispatcher_pos = load_repair.find("cbp_start_game_stock_initialization_dispatcher = yes")
+    load_refresh_pos = load_repair.find("cbp_core04_refresh_all_location_market_memory = yes")
+    require(load_dispatcher_pos >= 0 and load_refresh_pos > load_dispatcher_pos,
+            "game-load repair must refresh all Control floors after readiness repair")
 
     owner_change = extract_block(owner_on_action, "cbp_core03_probe_location_changed_owner")
     succession_pos = owner_change.find("cbp_core03_handle_location_changed_owner = yes")

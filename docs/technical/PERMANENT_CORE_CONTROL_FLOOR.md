@@ -86,7 +86,26 @@ cbp_monthly_stock_cycle_pulse
 
 ### Campaign start and save repair
 
-The existing global CORE-04 refresh retains the combined effect:
+Both lifecycle hooks run after a one-day delay. A fresh campaign follows:
+
+```txt
+on_game_start
+  -> cbp_start_game_stock_initialization_pulse
+     -> cbp_start_game_stock_initialization_dispatcher
+     -> cbp_core04_refresh_all_location_market_memory
+```
+
+A loaded save follows:
+
+```txt
+on_game_load
+  -> cbp_load_game_stock_initialization_pulse
+     -> cbp_repair_stock_lifecycle_on_game_load
+        -> repair or rerun stock initialization when required
+        -> cbp_core04_refresh_all_location_market_memory
+```
+
+The global CORE-04 refresh then retains the combined effect:
 
 ```txt
 cbp_core04_refresh_all_location_market_memory
@@ -94,8 +113,11 @@ cbp_core04_refresh_all_location_market_memory
      -> cbp_core04_refresh_current_country_location_market_memory
 ```
 
-Fresh campaigns and lifecycle repair paths can therefore establish or repair the
-floor without waiting for the first yearly pulse.
+The global refresh is guarded by `cbp_stock_runtime_ready_trigger`. The start and
+load sequences place it after initialization or readiness repair, so every
+successfully initialized campaign evaluates the floor at least once without
+waiting for the first yearly pulse. A failed or incompatible initialization
+remains fail-closed and does not mutate Control.
 
 ## Persistence and performance
 
@@ -121,7 +143,12 @@ Static validation requires:
 - use of the memory-only CORE-04 effect from the monthly country pulse;
 - absence of the Control-floor effect from the monthly memory traversal;
 - use of the combined CORE-04 effect from the yearly country pulse;
-- start/load reuse of `cbp_core04_refresh_all_location_market_memory`;
+- registration of the delayed start and load initialization pulses;
+- start ordering of stock initialization before
+  `cbp_core04_refresh_all_location_market_memory`;
+- load ordering of stock readiness repair before
+  `cbp_core04_refresh_all_location_market_memory`;
+- a runtime-ready guard on the global country traversal;
 - an explicit record that integration/core-status event exposure is not confirmed.
 
 Runtime acceptance still requires an in-game test because static validation cannot
