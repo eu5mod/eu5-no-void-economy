@@ -1,5 +1,7 @@
-# New-campaign US-04 initialization probe.
-# Run only after the delayed day-1 startup pulse has completed.
+# US-04 initialized-state and idempotence probe.
+# The static architecture validator verifies the exact 1.20 seed. This runtime
+# probe accepts legitimately adapted values and verifies that completed
+# initialization preserves them.
 
 cbp_us04_initialization_note_failure = {
 	save_temporary_scope_value_as = {
@@ -48,27 +50,45 @@ cbp_debug_run_us04_initialization_test = {
 					global_var:cbp_us04_multiplier_initialization_version != 3
 					scope:test_cbp_us04_initialization_wheat_present_before = 0
 					scope:test_cbp_us04_initialization_beer_present_before = 0
-					scope:test_cbp_us04_initialization_wheat_before < 1.199
-					scope:test_cbp_us04_initialization_wheat_before > 1.201
-					scope:test_cbp_us04_initialization_beer_before < 1.199
-					scope:test_cbp_us04_initialization_beer_before > 1.201
+					scope:test_cbp_us04_initialization_wheat_before <= 0
+					scope:test_cbp_us04_initialization_beer_before <= 0
 				}
 			}
-			debug_log = "ModeU5 US-04 INITIALIZATION FAIL_REASON reason=baseline_or_version_missing"
+			debug_log = "ModeU5 US-04 INITIALIZATION FAIL_REASON reason=initialized_state_missing_or_invalid"
 			cbp_us04_initialization_note_failure = yes
 		}
 
-		# Re-running the public once-only entry point must not multiply or rewrite.
+		# Re-running both public once-only entry points must not multiply or
+		# rewrite values that yearly adaptation has legitimately changed.
 		cbp_initialize_pop_demand_multipliers_once = yes
+		cbp_initialize_pop_demand_multipliers_for_current_country_once = yes
 		scope:cbp_us04_initialization_test_location = {
 			cbp_get_pop_demand_multiplier_good_wheat = yes
 			save_temporary_scope_value_as = { name = test_cbp_us04_initialization_wheat_after_second_call value = scope:cbp_us04_old_multiplier }
+			cbp_get_pop_demand_multiplier_good_beer = yes
+			save_temporary_scope_value_as = { name = test_cbp_us04_initialization_beer_after_second_call value = scope:cbp_us04_old_multiplier }
+		}
+		save_temporary_scope_value_as = {
+			name = test_cbp_us04_initialization_wheat_idempotence_delta
+			value = {
+				value = scope:test_cbp_us04_initialization_wheat_after_second_call
+				subtract = scope:test_cbp_us04_initialization_wheat_before
+			}
+		}
+		save_temporary_scope_value_as = {
+			name = test_cbp_us04_initialization_beer_idempotence_delta
+			value = {
+				value = scope:test_cbp_us04_initialization_beer_after_second_call
+				subtract = scope:test_cbp_us04_initialization_beer_before
+			}
 		}
 		if = {
 			limit = {
 				OR = {
-					scope:test_cbp_us04_initialization_wheat_after_second_call < 1.199
-					scope:test_cbp_us04_initialization_wheat_after_second_call > 1.201
+					scope:test_cbp_us04_initialization_wheat_idempotence_delta < -0.0001
+					scope:test_cbp_us04_initialization_wheat_idempotence_delta > 0.0001
+					scope:test_cbp_us04_initialization_beer_idempotence_delta < -0.0001
+					scope:test_cbp_us04_initialization_beer_idempotence_delta > 0.0001
 				}
 			}
 			debug_log = "ModeU5 US-04 INITIALIZATION FAIL_REASON reason=second_call_not_idempotent"
@@ -84,6 +104,7 @@ cbp_debug_run_us04_initialization_test = {
 			}
 		}
 		cbp_initialize_pop_demand_multipliers_once = yes
+		cbp_initialize_pop_demand_multipliers_for_current_country_once = yes
 		scope:cbp_us04_initialization_test_location = {
 			cbp_get_pop_demand_multiplier_good_wheat = yes
 			save_temporary_scope_value_as = { name = test_cbp_us04_initialization_missing_present_after_call value = scope:cbp_us04_multiplier_present }
@@ -111,12 +132,12 @@ cbp_debug_run_us04_initialization_test = {
 		if = {
 			limit = { scope:test_cbp_us04_initialization_failure_count = 0 }
 			set_global_variable = test_cbp_us04_pop_demand_initialization_passed
-			debug_log = "ModeU5 US-04 INITIALIZATION RESULT versioned_seed PASS"
+			debug_log = "ModeU5 US-04 INITIALIZATION RESULT versioned_state PASS"
 			debug_log = "ModeU5 TEST PASS scenario=us04_pop_demand_initialization"
 		}
 		else = {
 			set_global_variable = test_cbp_us04_pop_demand_initialization_failed
-			debug_log = "ModeU5 US-04 INITIALIZATION RESULT versioned_seed FAIL"
+			debug_log = "ModeU5 US-04 INITIALIZATION RESULT versioned_state FAIL"
 			debug_log = "ModeU5 TEST FAIL scenario=us04_pop_demand_initialization"
 		}
 	}

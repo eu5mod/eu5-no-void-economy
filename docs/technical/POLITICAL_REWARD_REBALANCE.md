@@ -73,9 +73,9 @@ Manifest-owned exact-path files may contain unchanged vanilla
 generated vanilla carriers rather than CBP-authored stock mutations. When the
 vanilla source contains the obsolete `building_upkeep_multiplier` modifier,
 the generator removes that line because the package implements zero Crown
-upkeep through the `BUILDING_UPKEEP_FACTOR` define. The package also retains
-`cbp_building_upkeep_auto_modifiers.txt` with `building_upkeep_costs = -1.0`
-as the explicit fail-closed guard required by the CBP business rule.
+upkeep through the supported `BUILDING_UPKEEP_FACTOR` define. Do not add an
+auto-modifier fallback: runtime validation confirmed that EU5 rejects both
+`building_upkeep_multiplier` and `building_upkeep_costs` on that surface.
 
 The script-safety validator applies the same exact-path manifest exemption to
 unchanged vanilla content inside those carriers. The exemption does not apply
