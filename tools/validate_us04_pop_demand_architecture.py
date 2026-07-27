@@ -90,6 +90,7 @@ def main() -> int:
     integration = read("in_game/common/scripted_effects/cbp_us04_pop_demand_live_integration_effects.txt")
     observed_target = read("in_game/common/scripted_effects/cbp_us04_observed_current_target_effects.txt")
     on_actions = read("in_game/common/on_action/cbp_stock_on_actions.txt")
+    core03_on_actions = read("in_game/common/on_action/cbp_core03_exposure_on_actions.txt")
     probe_values = read("packages/cbp_core_tests/in_game/common/script_values/cbp_us04_pop_demand_injection_values.txt")
     endpoint_adapter = read("packages/cbp_core_tests/in_game/common/script_values/cbp_us04_pop_demand_endpoint_probe_values.txt")
     endpoint_test = read("packages/cbp_core_tests/in_game/common/scripted_effects/cbp_us04_pop_demand_endpoint_test_effects.txt")
@@ -115,6 +116,7 @@ def main() -> int:
     market_monthly_reconciliation = block(template, "cbp_monthly_reconcile_country_market_pop_demand_good___GOOD__")
     monthly_country_runtime = block(pop_demand_effects, "cbp_run_monthly_us04_estate_accounting_for_current_country")
     monthly_country_legacy_runtime = block(pop_demand_effects, "cbp_run_monthly_us04_reconciliation_for_current_country")
+    ownership_handler = block(pop_demand_effects, "cbp_us04_handle_location_changed_owner")
     monthly_owner_switch = block(read("in_game/common/scripted_effects/cbp_q8_7_global_owner_effects.txt"), "cbp_run_monthly_stock_cycle_q8_7_owner_switch")
     monthly_legacy_cycle = block(read("in_game/common/scripted_effects/cbp_stock_effects.txt"), "cbp_run_monthly_stock_cycle")
     init_root = block(integration, "cbp_run_pop_demand_multiplier_initialization_v3")
@@ -225,6 +227,13 @@ def main() -> int:
     expect("every_market_present_in_country = {" not in monthly_country_runtime, "US-04 current-country monthly runtime must not retain the dense country-market iterator")
     expect("every_owned_location = {" not in monthly_country_runtime, "US-04 current-country monthly runtime must not retain a dense owned-location iterator")
     expect("cbp_monthly_assess_country_market_estate_consumption_all_goods = yes" not in monthly_country_runtime, "US-04 normal monthly runtime must not call the dense market/good-first compatibility dispatcher")
+    expect("cbp_us04_handle_location_changed_owner = yes" in core03_on_actions, "US-04 sparse indexes must be repaired from the shared CORE-03 ownership-change dispatcher")
+    expect("cbp_economy_rebalance_loaded_trigger = yes" in ownership_handler, "US-04 ownership-change repair must fail closed when Rebalance Economy is absent")
+    expect(
+        "cbp_us04_remove_location_from_country_sparse_index_all_goods = yes" in ownership_handler
+        and "cbp_us04_refresh_location_sparse_index_all_goods = yes" in ownership_handler,
+        "US-04 ownership-change repair must remove the location from the loser index and refresh it for the winner",
+    )
     expect("active_proxy" in debug_test, "US-04 debug test must classify Estate-level accounting as active proxy reconciliation")
     expect("scenario=us04_estate_level_accounting" in debug_test, "US-04 debug test must include the PR #167 Estate-level accounting probe")
     estate_spec = read("docs/specifications/US04_ESTATE_LEVEL_ACCOUNTING.md")

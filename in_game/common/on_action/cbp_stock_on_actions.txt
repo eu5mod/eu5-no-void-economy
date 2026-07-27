@@ -57,6 +57,9 @@ on_location_changed_rank = {
 cbp_capacity_location_rank_changed_pulse = {
 	effect = {
 		cbp_handle_location_capacity_changed = yes
+		# Rank is one of the floor inputs, so enforce the new threshold immediately
+		# in the existing hardcoded rank-change hook.
+		cbp_enforce_owner_core_control_floor = yes
 	}
 }
 
@@ -77,6 +80,9 @@ cbp_monthly_stock_cycle_pulse = {
 		cbp_initialize_pop_demand_multipliers_for_current_country_once = yes
 		cbp_refresh_pop_demand_live_integration_from_cmm_country_scope = yes
 		cbp_run_monthly_stock_cycle_q8_7_owner_switch = yes
+		# Until a native minimum_control modifier exists, keep the owner-core floor
+		# authoritative by reapplying it every month. Reuse the existing CORE-04
+		# owned-location traversal instead of adding a second monthly loop.
 		cbp_core04_refresh_current_country_location_market_memory = yes
 	}
 }

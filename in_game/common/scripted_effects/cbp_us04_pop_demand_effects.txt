@@ -76,20 +76,23 @@ cbp_us04_refresh_sparse_index_for_location = {
 # location between country-owned lists. Remove from the old owner, then evaluate
 # current state against the new owner.
 cbp_us04_handle_location_changed_owner = {
-	save_temporary_scope_as = cbp_us04_sparse_location
-
 	if = {
-		limit = { exists = scope:loser }
-		scope:loser = {
-			save_temporary_scope_as = cbp_us04_sparse_country
-			cbp_us04_remove_location_from_country_sparse_index_all_goods = yes
+		limit = { cbp_economy_rebalance_loaded_trigger = yes }
+		save_temporary_scope_as = cbp_us04_sparse_location
+
+		if = {
+			limit = { exists = scope:loser }
+			scope:loser = {
+				save_temporary_scope_as = cbp_us04_sparse_country
+				cbp_us04_remove_location_from_country_sparse_index_all_goods = yes
+			}
 		}
-	}
 
-	if = {
-		limit = { exists = scope:winner }
-		scope:cbp_us04_sparse_location = {
-			cbp_us04_refresh_location_sparse_index_all_goods = yes
+		if = {
+			limit = { exists = scope:winner }
+			scope:cbp_us04_sparse_location = {
+				cbp_us04_refresh_location_sparse_index_all_goods = yes
+			}
 		}
 	}
 }
