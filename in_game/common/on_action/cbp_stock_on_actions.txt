@@ -80,9 +80,10 @@ cbp_monthly_stock_cycle_pulse = {
 		cbp_initialize_pop_demand_multipliers_for_current_country_once = yes
 		cbp_refresh_pop_demand_live_integration_from_cmm_country_scope = yes
 		cbp_run_monthly_stock_cycle_q8_7_owner_switch = yes
-		# Monthly CORE-04 memory remains required, but owner-core Control-floor
-		# evaluation is deliberately excluded from this high-frequency traversal.
-		cbp_core04_refresh_current_country_location_market_memory_monthly = yes
+		# Until a native minimum_control modifier exists, keep the owner-core floor
+		# authoritative by reapplying it every month. Reuse the existing CORE-04
+		# owned-location traversal instead of adding a second monthly loop.
+		cbp_core04_refresh_current_country_location_market_memory = yes
 	}
 }
 
@@ -97,9 +98,6 @@ cbp_yearly_pop_demand_adaptation_pulse = {
 		cbp_initialize_pop_demand_multipliers_for_current_country_once = yes
 		cbp_refresh_pop_demand_live_integration_from_cmm_country_scope = yes
 		cbp_run_yearly_pop_demand_adaptation_for_current_country = yes
-		# No confirmed integration/core-status on-action exists. Reuse the combined
-		# CORE-04 location traversal once per year as the low-frequency fallback.
-		cbp_core04_refresh_current_country_location_market_memory = yes
 	}
 }
 
